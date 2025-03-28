@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pinecone Router SPA</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js and Pinecone Router -->
+  <script src="https://cdn.jsdelivr.net/npm/pinecone-router@6.0.0/dist/router.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    .router-link-active {
+      font-weight: bold;
+      color: #3b82f6 !important; /* blue-500 */
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['IBM Plex Sans Arabic', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div x-data="app()">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <span class="text-xl font-bold text-blue-600">Pinecone SPA</span>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a href="#/" class="text-gray-900 hover:border-gray-300 hover:text-gray-700 border-b-2 border-transparent inline-flex items-center px-1 pt-1 text-sm font-medium" 
+                 :class="{ 'router-link-active': $router.path === '/' }">
+                Home
+              </a>
+              <a href="#/about" class="border-transparent text-gray-500 inline-flex items-center px-1 pt-1 hover:border-gray-300 hover:text-gray-700 border-b-2 text-sm font-medium"
+                 :class="{ 'router-link-active': $router.path === '/about' }">
+                About
+              </a>
+              <a href="#/contact" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                 :class="{ 'router-link-active': $router.path === '/contact' }">
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="sm:hidden bg-white shadow-sm">
+      <div class="pt-2 pb-3 space-y-1 px-4">
+        <a href="#/" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+           :class="{ 'router-link-active': $router.path === '/' }">
+          Home
+        </a>
+        <a href="#/about" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+           :class="{ 'router-link-active': $router.path === '/about' }">
+          About
+        </a>
+        <a href="#/contact" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+           :class="{ 'router-link-active': $router.path === '/contact' }">
+          Contact
+        </a>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Home Page -->
+      <template x-route="/">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">Welcome to our SPA!</h1>
+          <p class="text-gray-600 mb-4">This is a Single Page Application built with Pinecone Router for Alpine.js.</p>
+          <p class="text-gray-600">path route: <span x-text="$router.path" class="font-mono"></span></p>
+          <p class="text-gray-600">Base path: <span x-text="$router.basePath" class="font-mono"></span></p>
+        </div>
+      </template>
+
+      <!-- About Page -->
+      <template x-route="/about">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">About Us</h1>
+          <p class="text-gray-600 mb-4">We are a team of developers who love building web applications with modern tools.</p>
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+            <p class="text-blue-700">This page demonstrates hash routing with a base path of /page.html/</p>
+          </div>
+        </div>
+      </template>
+
+      <!-- Contact Page -->
+      <template x-route="/contact" x-handler="contactHandler">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
+          <form @submit.prevent="submitForm" class="space-y-4">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+              <input type="text" id="name" x-model="form.name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+              <input type="email" id="email" x-model="form.email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+            </div>
+            <div>
+              <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+              <textarea id="message" rows="4" x-model="form.message" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"></textarea>
+            </div>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Send Message
+            </button>
+          </form>
+          <div x-show="submitted" x-transition class="mt-4 p-4 bg-green-50 border-l-4 border-green-500">
+            <p class="text-green-700">Thank you for your message! We'll get back to you soon.</p>
+          </div>
+        </div>
+      </template>
+
+      <!-- 404 Page -->
+      <template x-route="notfound">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-4">404 - Page Not Found</h1>
+          <p class="text-gray-600">The page you're looking for doesn't exist.</p>
+          <a href="#/" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Go back home
+          </a>
+        </div>
+      </template>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      window.PineconeRouter.settings.hash = true // Enable hash routing
+      window.PineconeRouter.settings.basePath = '/page.html/' // Set base path
+    })
+    function app() {
+      return {
+        form: {
+          name: '',
+          email: '',
+          message: ''
+        },
+        submitted: false,
+        
+        contactHandler(context) {
+          // Reset form when visiting the contact page
+          this.form = { name: '', email: '', message: '' };
+          this.submitted = false;
+        },
+        
+        submitForm() {
+          // In a real app, you would send this data to a server
+          console.log('Form submitted:', this.form);
+          this.submitted = true;
+          
+          // Reset form after submission
+          setTimeout(() => {
+            this.form = { name: '', email: '', message: '' };
+          }, 3000);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

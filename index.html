@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>talgeema</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pinecone-router@6.0.0/dist/router.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['IBM Plex Sans Arabic', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f4ff',
+                            100: '#d9e2ff',
+                            200: '#b3c6ff',
+                            300: '#8da9ff',
+                            400: '#678dff',
+                            500: '#051749', // Base color
+                            600: '#04133d',
+                            700: '#030f31',
+                            800: '#020b25',
+                            900: '#010718',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            }
+        }
+        @layer base {
+            html, body {
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+    <main x-data="menuApp" class="flex flex-col h-full">
+        <!-- Header -->
+        <header class="bg-primary-700 text-white py-6 shadow-lg">
+            <section class="relative bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white overflow-hidden">
+                <!-- Decorative elements -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-0 left-0 w-32 h-32 rounded-full bg-primary-400 mix-blend-overlay blur-xl"></div>
+                    <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-primary-300 mix-blend-overlay blur-xl"></div>
+                </div>
+            
+                <div class="container mx-auto px-4 py-24 md:py-32 relative z-10">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <!-- Logo/Title with animation -->
+                        <a href="/" class="inline-block group transform transition duration-500 hover:scale-[1.02]">
+                            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                                <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary-100 via-primary-50 to-white">
+                                    تلقيمة
+                                </span>
+                            </h1>
+                            <div class="w-24 h-1.5 bg-gradient-to-r from-primary-300 to-primary-200 mx-auto rounded-full 
+                                        transition-all duration-500 group-hover:w-32 group-hover:from-primary-200 group-hover:to-primary-100">
+                            </div>
+                        </a>
+            
+                        <!-- Tagline -->
+                        <p class="text-xl md:text-2xl text-primary-100 mt-8 mb-10 leading-relaxed">
+                            حياك في "تلقيمة".. تفضل أيش طلبك؟
+                        </p>
+            
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+                            <a href="#" class="px-8 py-3.5 bg-white text-primary-800 font-medium rounded-lg shadow-lg hover:bg-opacity-90 
+                                            transform transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50">
+                                    اطلب الآن
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Floating food icons grid - Menu Specific -->
+<div class="absolute inset-0 grid grid-cols-5 grid-rows-4 gap-4 pointer-events-none opacity-15">
+    <!-- Hot Drinks -->
+    <div class="col-start-1 row-start-1 text-3xl flex justify-center items-center">☕</div>
+    <div class="col-start-3 row-start-1 text-4xl flex justify-center items-center">🫖</div>
+    <div class="col-start-5 row-start-1 text-3xl flex justify-center items-center">🍵</div>
+    
+    <!-- Cold Drinks -->
+    <div class="col-start-2 row-start-2 text-4xl flex justify-center items-center transform translate-y-4">🧊</div>
+    <div class="col-start-4 row-start-2 text-5xl flex justify-center items-center">🥤</div>
+    <div class="col-start-1 row-start-3 text-4xl flex justify-center items-center">🍹</div>
+    
+    <!-- Fast Food -->
+    <div class="col-start-3 row-start-3 text-5xl flex justify-center items-center transform -translate-y-2">🍔</div>
+    <div class="col-start-5 row-start-3 text-4xl flex justify-center items-center transform translate-y-3">🍟</div>
+    <div class="col-start-2 row-start-4 text-4xl flex justify-center items-center">🌯</div>
+    <div class="col-start-4 row-start-4 text-3xl flex justify-center items-center">🥙</div>
+</div>
+            </section>
+        </header>
+    
+        <!-- Router Templates -->
+        <div class="flex-grow">
+            <template x-route="/contact">
+                <div class="container mx-auto px-4 py-8 max-w-4xl">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-primary-800">تواصل معنا</h2>
+                        <p class="text-gray-600">يمكنك التواصل معنا عبر:</p>
+                        <p class="mt-4">الهاتف: xxx-xxx-xxxx</p>
+                        <p>البريد: info@talgeema.com</p>
+                    </div>
+                </div>
+            </template>
+
+            <template x-route="/about">
+                <div class="container mx-auto px-4 py-8 max-w-4xl">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-primary-800">عن تلقيمة</h2>
+                        <p class="text-gray-600">تلقيمة هي وجهتك المفضلة للمشروبات والوجبات السريعة</p>
+                    </div>
+                </div>
+            </template>
+
+            <template x-route="/faq">
+                <div class="container mx-auto px-4 py-8 max-w-4xl">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-4 text-primary-800">الأسئلة الشائعة</h2>
+                        <p class="text-gray-600">قائمة بالأسئلة المتكررة وإجاباتها</p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template x-route="/">
+                <main class="container mx-auto px-4 py-8 max-w-4xl">
+                    <!-- Loop through each category -->
+                    <template x-for="category in categories" :key="category.id">
+                        <section class="mb-12">
+                            <div class="flex items-center mb-6">
+                                <div class="h-1 bg-primary-500 flex-1"></div>
+                                <h2 class="text-2xl font-bold mx-4 text-primary-800" x-text="category.name"></h2>
+                                <div class="h-1 bg-primary-500 flex-1"></div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <template x-for="item in category.items" :key="item.id">
+                                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex h-full gap-4">
+                                        <!-- Text content (stacked at bottom) -->
+                                        <div class="flex-1 flex flex-col justify-center">
+                                            <h3 class="text-xl font-semibold text-primary-700" x-text="item.name"></h3>
+                                            <div class="mt-2">
+                                                <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5">
+                                                    <span x-text="item.price"></span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]" data-name="symbol of the Saudi Riyal" viewBox="0 0 1124.14 1256.39">
+                                                        <path fill="#231f20" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/>
+                                                        <path fill="#231f20" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- Image (aligned to bottom) -->
+                                        <div class="w-24 h-24 flex-shrink-0">
+                                            <img :src="item.imageSrc" alt="" class="w-full h-full object-cover rounded-lg">
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </section>
+                    </template>
+                </main>
+            </template>
+        </div>
+    
+        <!-- Footer with updated links -->
+        <footer class="bg-primary-800 text-white py-8 mt-auto">
+            <div class="container mx-auto px-4 text-center">
+                <h3 class="text-xl font-bold mb-4">تلقيمة</h3>
+                <p class="text-primary-200 mb-4">
+                    المشروبات والوجبات السريعة
+                </p>
+                <div class="flex justify-center space-x-4 space-x-reverse">
+                    <a href="/contact" class="text-primary-200 hover:text-white transition-colors">تواصل معنا</a>
+                    <span class="text-primary-500">|</span>
+                    <a href="/about" class="text-primary-200 hover:text-white transition-colors">عن تلقيمة</a>
+                    <span class="text-primary-500">|</span>
+                    <a href="/faq" class="text-primary-200 hover:text-white transition-colors">الأسئلة الشائعة</a>
+                </div>
+                <p class="mt-6 text-primary-300 text-sm">© 2025 تلقيمة. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+    </main>
+    <script>
+    document.addEventListener('alpine:init', () => {
+        window.PineconeRouter.settings.hash = true;
+        window.PineconeRouter.settings.basePath = '/';
+        
+        Alpine.data('menuApp', () => ({
+            "categories": [
+        {
+            "id": 1,
+            "name": "المشروبات الساخنة",
+            "items": [
+                {
+                    "id": 101,
+                    "name": "شاي تلقيمة",
+                    "price": "4.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png"
+                },
+                {
+                    "id": 102,
+                    "name": "شاي كرك",
+                    "price": "7.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/159521319/prdimage/prd-img-1738868851729.png"
+                },
+                {
+                    "id": 103,
+                    "name": "قهوة سعودية",
+                    "price": "6.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/150320763/prdimage/53_%D9%82%D9%87%D9%88%D8%A9%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9.avif"
+                },
+                {
+                    "id": 104,
+                    "name": "قهوة سوداء",
+                    "price": "6.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/20881427/prdimage/prd-img-1738809193208.png"
+                },
+                {
+                    "id": 105,
+                    "name": "قهوة كريمر",
+                    "price": "7.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/174319986/prdimage/prd-img-1738809615833.png"
+                },
+                {
+                    "id": 106,
+                    "name": "مشروبات الطبيعة",
+                    "price": "6.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/229968281/prdimage/prd-img-1738842392605.png"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "المشروبات الباردة",
+            "items": [
+                {
+                    "id": 201,
+                    "name": "موهيتو",
+                    "price": "10.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/166490327/prdimage/18_358168653_1480148992794988_3649923696135499434_n-Photoroom.png"
+                },
+                {
+                    "id": 202,
+                    "name": "ايس كركديه",
+                    "price": "8.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/238341261/prdimage/prd-img-1738874793638.png"
+                },
+                {
+                    "id": 203,
+                    "name": "غازيات",
+                    "price": "4.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/129076130/prdimage/prd-img-1738902555023.png"
+                },
+                {
+                    "id": 204,
+                    "name": "ماء",
+                    "price": "1.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/237555082/prdimage/prd-img-1738901677578.png"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "الوجبات السريعة",
+            "items": [
+                {
+                    "id": 301,
+                    "name": "برجر دجاج",
+                    "price": "9.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/51172733/prdimage/prd-img-1738887140909.png"
+                },
+                {
+                    "id": 302,
+                    "name": "برجر زنجر",
+                    "price": "11.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/75308430/prdimage/prd-img-1738893900354.png"
+                },
+                {
+                    "id": 303,
+                    "name": "برجر لحم",
+                    "price": "10.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/219147099/prdimage/prd-img-1738896079418.png"
+                },
+                {
+                    "id": 304,
+                    "name": "بطاطس",
+                    "price": "5.00",
+                    "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/173064598/prdimage/66_Copycat-McDonalds-French-Fries-.jpg"
+                }
+            ]
+        }
+    ],
+            init() {
+                // Handle initial route
+                if (!window.location.hash) {
+                    window.location.hash = '#/';
+                }
+            }
+        }));
+    });
+    </script>
+</body>
+</html>
