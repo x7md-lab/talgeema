@@ -43,11 +43,34 @@
             html, body {
                 height: 100%;
             }
+             /* Style the backdrop */
+            dialog::backdrop {
+                background-color: rgba(0, 0, 0, 0); /* Start transparent */
+                transition: background-color 0.3s ease-in-out;
+            }
+            dialog[open]::backdrop {
+                background-color: rgba(0, 0, 0, 0.5); /* Fade in */
+            }
+            /* Prevent body scrolling when dialog is open (optional but recommended) */
+            body:has(dialog[open]) {
+                overflow: hidden;
+            }
         }
     </style>
 </head>
 <body class="font-sans bg-gray-50 text-gray-800">
     <main x-data="menuApp" class="flex flex-col h-full">
+                <button 
+            @click="$refs.cartDialog.showModal()"
+            class="fixed bottom-4 left-4 z-50 
+            w-16 h-16 rounded-full bg-primary-600 
+            hover:bg-primary-700 shadow-lg flex items-center justify-center text-white
+            transition-all duration-300 hover:scale-110">
+            🛒
+            <span x-text="orders.length" 
+                class="absolute -top-1 -right-1 bg-red-500 text-white w-6 h-6 rounded-full text-sm flex items-center justify-center border-2 border-white">
+            </span>
+        </button>
         <nav class="isolate sticky top-0 z-50 bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white shadow-lg px-12 py-4">
             <div class="container mx-auto flex justify-center items-center">
             <a href="/" class="flex items-center space-x-2 space-x-reverse">
@@ -166,17 +189,24 @@
                                 <template x-for="item in category.items" :key="item.id">
                                     <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex h-full gap-4">
                                         <!-- Text content (stacked at bottom) -->
-                                        <div class="flex-1 flex flex-col justify-center">
-                                            <h3 class="text-xl font-semibold text-primary-700" x-text="item.name"></h3>
-                                            <div class="mt-2">
-                                                <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5">
-                                                    <span x-text="item.price"></span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]" data-name="symbol of the Saudi Riyal" viewBox="0 0 1124.14 1256.39">
-                                                        <path fill="#231f20" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/>
-                                                        <path fill="#231f20" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/>
-                                                    </svg>
-                                                </span>
+                                        <div class="flex-1 flex flex-col justify-between">
+                                            <div>
+                                                <h3 class="text-xl font-semibold text-primary-700" x-text="item.name"></h3>
+                                                <div class="mt-2">
+                                                    <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5">
+                                                        <span x-text="item.price"></span>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]" data-name="symbol of the Saudi Riyal" viewBox="0 0 1124.14 1256.39">
+                                                            <path fill="#231f20" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/>
+                                                            <path fill="#231f20" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/>
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                             </div>
+                                            <button 
+                                                @click="addOrder(item.id)"
+                                                class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm">
+                                                إضافة للسلة
+                                            </button>
                                         </div>
                                         <!-- Image (aligned to bottom) -->
                                         <div class="w-24 h-24 flex-shrink-0">
@@ -190,6 +220,51 @@
                 </main>
             </template>
         </div>
+        
+        <dialog x-ref="cartDialog" class="rounded-lg shadow-xl rtl:text-right w-full max-w-md bg-white backdrop:bg-black/50">
+            <div class="p-6 flex flex-col h-full">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                    <h2 class="text-2xl font-bold text-primary-800">سلة الطلبات</h2>
+                    <button @click="$refs.cartDialog.close()" class="text-gray-500 hover:text-primary-800 text-2xl">
+                        &times;
+                    </button>
+                </div>
+        
+                <!-- Orders List -->
+                <div class="flex-1 overflow-y-auto">
+                    <template x-for="order in orders" :key="order.id">
+                        <div class="flex items-center justify-between py-3 border-b">
+                            <div class="flex-1">
+                                <h3 class="font-medium" x-text="getItemById(order.id).name"></h3>
+                                <p class="text-sm text-gray-500">
+                                    <span dir="ltr" class="font-bold" x-text="order.quantity + 'X'"></span>  
+                                    <span x-text="getItemById(order.id).price"></span>
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-primary-800" x-text="(order.quantity * getItemById(order.id).price).toFixed(2)"></span>
+                                <button @click="removeOrder(order.id)" 
+                                        class="text-red-500 hover:text-red-700 text-sm">
+                                    إزالة
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+        
+                <!-- Footer -->
+                <div class="border-t pt-4 mt-4">
+                    <div class="flex justify-between mb-4 font-bold">
+                        <span>المجموع:</span>
+                        <span x-text="total.toFixed(2)"></span>
+                    </div>
+                    <button class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                        اتمام الطلب
+                    </button>
+                </div>
+            </div>
+        </dialog>
     
         <!-- Footer with updated links -->
         <footer class="bg-primary-800 text-white py-8 mt-auto">
@@ -217,8 +292,7 @@
         window.PineconeRouter.settings.basePath = '/';
         
         Alpine.data('menuApp', () => ({
-            "categories": [
-        {
+            "categories": [{
             "id": 1,
             "name": "المشروبات الساخنة",
             "items": [
@@ -326,7 +400,37 @@
                 if (!window.location.hash) {
                     window.location.hash = '#/';
                 }
+            },
+        showCart: false,
+        orders: [
+            // {id: 101, quantity: 2},
+            // {id: 301, quantity: 1},
+        ],
+        addOrder(id) {
+            const existingOrder = this.orders.find(order => order.id === id);
+            if (existingOrder) {
+                existingOrder.quantity++;
+            } else {
+                this.orders.push({ id, quantity: 1 });
             }
+            this.$refs.cartDialog.showModal();
+        },
+        getItemById(id) {
+            for (let category of this.categories) {
+                const item = category.items.find(item => item.id === id);
+                if (item) return item;
+            }
+            return null;
+        },
+        get total() {
+            return this.orders.reduce((sum, order) => {
+                const item = this.getItemById(order.id);
+                return sum + (parseFloat(item.price) * order.quantity);
+            }, 0);
+        },
+        removeOrder(id) {
+            this.orders = this.orders.filter(order => order.id !== id);
+        }
         }));
     });
     </script>
