@@ -75,14 +75,14 @@
 </head>
 <body class="font-sans bg-gray-50 text-gray-800">
     <main x-data="menuApp" class="flex flex-col h-full">
-                <button 
+        <button 
             @click="$refs.cartDialog.showModal()"
-            class="fixed bottom-4 left-4 z-50 
-            w-16 h-16 rounded-full bg-primary-600 
-            hover:bg-primary-700 shadow-lg flex items-center justify-center text-white
+            class="fixed bottom-4 right-4 z-50 
+            w-16 h-16 rounded-full bg-white 
+            hover:bg-primary-200 shadow-lg flex items-center justify-center text-white
             transition-all duration-300 hover:scale-110">
             🛒
-            <span x-text="orders.length" 
+            <span x-text="orders.reduce((sum, order) => sum + order.quantity, 0)" 
                 class="absolute -top-1 -right-1 bg-red-500 text-white w-6 h-6 rounded-full text-sm flex items-center justify-center border-2 border-white">
             </span>
         </button>
@@ -252,9 +252,8 @@
                     <template x-for="order in orders" :key="order.id">
                         <div class="flex items-center justify-between py-3 border-b">
                             <div class="flex-1">
-                                <h3 class="font-medium" x-text="getItemById(order.id).name"></h3>
-                                <p class="text-sm text-gray-500">
-                                    <span dir="ltr" class="font-bold" x-text="order.quantity + 'X'"></span>  
+                                <h3 class="font-medium" x-text="getItemById(order.id).name + ' (' + order.quantity + 'X)'"></h3>
+                                <p class="text-sm text-gray-500"> 
                                     <span x-text="getItemById(order.id).price"></span>
                                 </p>
                             </div>
