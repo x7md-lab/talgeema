@@ -40,6 +40,11 @@
             }
         }
         @layer base {
+            html {
+            /* specify doc at least fits viewport height */
+            block-size: 100%;
+            touch-action: manipulation;
+            }
             html, body {
                 height: 100%;
             }
