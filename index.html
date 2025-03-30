@@ -83,7 +83,7 @@
 
 <body class="font-sans bg-gray-50 text-gray-800">
     <main x-data="menuApp" class="flex flex-col h-full">
-        <button @click="$refs.cartDialog.showModal()" class="fixed bottom-4 right-4 z-50 
+        <button x-show="orders.length > 0" @click="$refs.cartDialog.showModal()" class="fixed bottom-4 right-4 z-50 
             w-16 h-16 rounded-full bg-white 
             hover:bg-primary-200 shadow-lg flex items-center justify-center text-white
             transition-all duration-300 hover:scale-110">
@@ -328,8 +328,26 @@
                 </div>
         </dialog>
 
+        <!-- Fixed Bottom Bar -->
+        <div x-show="(orders.length > 0) && $router.path === '/'" class="fixed bottom-0 left-0 right-0 bg-primary-600 text-white py-4 px-6 flex gap-3 justify-between items-center shadow-lg transition-transform transform"
+            x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0" x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
+            <div class="flex items-center gap-2">
+               <!-- <div class="size-16">
+            </div>-->
+            <span class="text-lg pr-16">المجموع:</span>
+            <span class="text-lg font-bold" x-text="total.toFixed(2)"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 1124.14 1256.39"></svg>
+                <path fill="#fff" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                <path fill="#fff" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+            </svg>
+            </div>
+            <button class="bg-primary-500 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+            اتمام الطلب
+            </button>
+        </div>
+
         <!-- Footer with updated links -->
-        <footer class="bg-primary-800 text-white py-8 mt-auto">
+        <footer class="bg-primary-800 text-white py-8 mt-auto pb-24 pt-12">
             <div class="container mx-auto px-4 text-center">
                 <h3 class="text-xl font-bold mb-4">تلقيمة</h3>
                 <p class="text-primary-200 mb-4">
