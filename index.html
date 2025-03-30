@@ -258,7 +258,7 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            <button @click="addOrder(item.id)"
+                                            <button @click="openPreOrderDialog(item)"
                                                 class="max-w-[145px] mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg 
                                                 hover:bg-primary-700 transition-all duration-200 text-sm
                                                 active:scale-95 active:bg-primary-800
@@ -281,7 +281,11 @@
         </div>
 
         <dialog x-ref="cartDialog" class="rounded-lg rtl:text-right md:m-auto md:max-w-md md:h-auto">
-            <div class="mt-12 bg-white w-full md:rounded-lg md:shadow-xl">
+            <div class="mt-12 bg-white w-full md:rounded-lg md:shadow-xl transition-transform transform"
+                x-transition:enter="translate-y-full" 
+                x-transition:enter-end="translate-y-0" 
+                x-transition:leave="translate-y-0" 
+                x-transition:leave-end="translate-y-full">
                 <div class="p-6 flex flex-col h-full">
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-4 pb-2 border-b">
@@ -293,38 +297,69 @@
 
                     <!-- Orders List -->
                     <div class="flex-1 overflow-y-auto">
-                        <template x-for="order in orders" :key="order.id">
-                            <div class="flex items-center justify-between py-3 border-b">
-                                <div class="flex-1">
-                                    <h3 class="font-bold" x-text="getItemById(order.id).name + ' (' + order.quantity +'X)'"></h3>
-                                    <span class="text-sm text-gray-500 mt-1 inline-flex items-center gap-1.5">
-                                        <span x-text="getItemById(order.id).price"></span> <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]"
-                                        data-name="symbol of the Saudi Riyal"
-                                        viewBox="0 0 1124.14 1256.39">
-                                        <path fill="##231f20"
-                                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-                                        <path fill="#231f20"
-                                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-                                    </svg>
-                                    </span>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <button :disabled="order.quantity <= 1" @click="order.quantity > 1 ? order.quantity-- : removeOrder(order.id)" 
-                                            class="disabled:opacity-[20%] w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                                            -
-                                        </button>
-                                        <span class="min-w-[2ch] text-center" x-text="order.quantity"></span>
-                                        <button @click="order.quantity++" 
-                                            class="w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                                            +
-                                        </button>
+                        <template x-for="order in orders" :key="order.key">
+                            <div class="border-b">
+                                <details class="group">
+                                    <summary class="flex items-center justify-between py-3 cursor-pointer select-none">
+                                        <div class="flex-1 flex items-start flex-col">
+                                            <h3 class="font-bold inline-flex items-center gap-2">
+                                                <svg class="transition-transform duration-200 size-5 text-primary-600 
+                                                    [&:has(../:not([open]))]:rotate-0 [&:has(../[open])]:-rotate-90" 
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span x-text="getItemById(order.id).name + ' (' + order.quantity +'X)'"></span>
+                                            </h3>
+                                            <div class="text-sm text-gray-500 mt-1 inline-flex items-center gap-1.5">
+                                                <span x-text="getItemById(order.id).price"></span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]"
+                                                    data-name="symbol of the Saudi Riyal"
+                                                    viewBox="0 0 1124.14 1256.39">
+                                                    <path fill="#231f20"
+                                                        d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                                                    <path fill="#231f20"
+                                                        d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <span class="text-primary-800"
+                                                x-text="(order.quantity * getItemById(order.id).price).toFixed(2)"></span>
+                                            <button @click="removeOrder(order.id)"
+                                                class="text-red-500 hover:text-red-700 text-sm">
+                                                إزالة
+                                            </button>
+                                        </div>
+                                    </summary>
+                                    <div class="pb-3 px-4 space-y-2">
+                                        <template x-if="order.options && Object.keys(order.options).length > 0">
+                                            <div class="space-y-1">
+                                                <template x-for="(value, key) in order.options" :key="key">
+                                                    <div class="text-sm text-gray-600">
+                                                        <span x-text="getOptionLabel(key) + ': '"></span>
+                                                        <span class="text-gray-800" x-text="getValueLabel(value)"></span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template x-if="order.notes">
+                                            <div class="text-sm">
+                                                <span class="text-gray-600">ملاحظات: </span>
+                                                <span class="text-gray-800" x-text="order.notes"></span>
+                                            </div>
+                                        </template>
                                     </div>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <span class="text-primary-800"
-                                        x-text="(order.quantity * getItemById(order.id).price).toFixed(2)"></span>
-                                    <button @click="removeOrder(order.id)"
-                                        class="text-red-500 hover:text-red-700 text-sm">
-                                        إزالة
+                                </details>
+                                <!-- Quantity controls moved outside details -->
+                                <div class="flex items-center gap-2 px-4 py-2 border-t">
+                                    <button :disabled="order.quantity <= 1" @click="order.quantity > 1 ? order.quantity-- : removeOrder(order.id)" 
+                                        class="disabled:opacity-[20%] w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                        -
+                                    </button>
+                                    <span class="min-w-[2ch] text-center" x-text="order.quantity"></span>
+                                    <button @click="order.quantity++" 
+                                        class="w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                        +
                                     </button>
                                 </div>
                             </div>
@@ -337,13 +372,93 @@
                             <span>المجموع:</span>
                             <span x-text="total.toFixed(2)"></span>
                         </div>
-                        <button
+                        <button @click="console.log('Orders:', orders)"
                             class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
                             اتمام الطلب
                         </button>
                     </div>
                 </div>
         </dialog>
+
+      <!-- Pre-order Dialog -->
+<dialog x-ref="preOrderDialog" class="rounded-lg rtl:text-right md:m-auto md:max-w-md md:h-auto overflow-hidden">
+    <div class="mt-12 bg-white w-full md:rounded-lg md:shadow-xl flex flex-col transition-transform transform"
+        x-transition:enter="translate-y-full" 
+        x-transition:enter-end="translate-y-0" 
+        x-transition:leave="translate-y-0" 
+        x-transition:leave-end="translate-y-full">
+        <div class="p-6 flex flex-col overflow-y-auto" style="max-height: calc(80vh - 116px);">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                <h2 class="text-2xl font-bold text-primary-800" x-text="selectedItem?.name || ''"></h2>
+                <button @click="$refs.preOrderDialog.close()" class="text-gray-500 hover:text-primary-800 text-2xl">
+                    &times;
+                </button>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <!-- Quantity -->
+                <div class="flex gap-4 items-center">
+                    <label class="font-medium">الكمية:</label>
+                    <div class="flex items-center gap-2">
+                        <button @click="preOrderQuantity > 1 ? preOrderQuantity-- : null" 
+                            class="disabled:opacity-[20%] w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                            -
+                        </button>
+                        <span class="min-w-[3ch] text-center" x-text="preOrderQuantity"></span>
+                        <button @click="preOrderQuantity++" 
+                            class="w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Options -->
+                <template x-if="selectedItemOptions">
+                    <div class="space-y-4 border-y py-4">
+                        <template x-for="(values, key) in selectedItemOptions.options" :key="key">
+                            <div>
+                                <label class="font-medium block mb-2" x-text="getOptionLabel(key)"></label>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="value in values" :key="value">
+                                        <button 
+                                            @click="toggleOption(key, value)"
+                                            :class="isOptionSelected(key, value) ? 
+                                            'bg-primary-600 text-white' : 
+                                            'bg-primary-100 text-primary-800 hover:bg-primary-200'"
+                                            class="px-3 py-1.5 rounded-full text-sm transition-colors"
+                                            x-text="getValueLabel(value)">
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Notes -->
+                <div>
+                    <label class="font-medium block mb-2">ملاحظات إضافية:</label>
+                    <textarea x-model="preOrderNotes" 
+                        class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        rows="2"
+                        placeholder="أي ملاحظات إضافية..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Footer -->
+        <div class="border-t p-6 bg-white sticky bottom-0">
+            <div class="flex justify-between mb-4 font-bold">
+                <span>السعر:</span>
+                <span x-text="(selectedItem?.price * preOrderQuantity).toFixed(2)"></span>
+            </div>
+            <button @click="confirmPreOrder()"
+                class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                إضافة للسلة
+            </button>
+        </div>
+    </div>
+</dialog>
 
         <!-- Fixed Bottom Bar -->
         <div x-show="(orders.length > 0)" class="fixed bottom-0 left-0 right-0 bg-primary-600 text-white py-4 px-6 flex gap-3 justify-between items-center shadow-lg transition-transform transform"
@@ -361,8 +476,9 @@
                     d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
             </svg>
             </div>
-            <button class="bg-white text-primary-800 hover:bg-primary-700 px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
-            اتمام الطلب
+            <button @click="console.log('Orders:', orders)" 
+                class="bg-white text-primary-800 hover:bg-primary-700 px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
+                اتمام الطلب
             </button>
         </div>
 
@@ -527,6 +643,251 @@
                     // {id: 101, quantity: 2},
                     // {id: 301, quantity: 1},
                 ],
+                selectedItem: null,
+                preOrderQuantity: 1,
+                preOrderNotes: '',
+                selectedOptions: {},
+                pre_order_options: 
+                [
+                    {
+                    "item_id": 101,
+                    "name": "شاي تلقيمة",
+                    "options": {
+                        "sugar": ["none", "light", "medium", "heavy"],
+                        "additives": ["mint", "lemon", "herbs"]
+                    }
+                    },
+                    {
+                    "item_id": 102,
+                    "name": "شاي كرك",
+                    "options": {
+                        "sugar": ["none", "light", "medium", "heavy"],
+                    }
+                    },
+                    {
+                    "item_id": 103,
+                    "name": "قهوة سعودية",
+                    "options": {
+                        "sugar": ["none", "light", "medium"],
+                        "cardamom": ["yes", "no"]
+                    }
+                    },
+                    {
+                    "item_id": 104,
+                    "name": "قهوة سوداء",
+                    "options": {
+                        "sugar": ["none", "light", "medium"],
+                        "cream": ["yes", "no"]
+                    }
+                    },
+                    {
+                    "item_id": 105,
+                    "name": "قهوة كريمر",
+                    "options": {
+                        "sugar": ["none", "light", "medium"],
+                        "flavor": ["vanilla", "caramel", "original"]
+                    }
+                    },
+                    {
+                    "item_id": 106,
+                    "name": "مشروبات الطبيعة",
+                    "options": {
+                        "type": ["chamomile", "mint", "ginger"]
+                    }
+                    },
+                    {
+                    "item_id": 201,
+                    "name": "موهيتو",
+                    "options": {
+                        "mint": ["light", "extra"],
+                        "sweetness": ["less", "normal", "extra"]
+                    }
+                    },
+                    {
+                    "item_id": 202,
+                    "name": "ايس كركديه",
+                    "options": {
+                        "sweetness": ["less", "normal", "extra"],
+                        "lemon": ["yes", "no"]
+                    }
+                    },
+                    {
+                    "item_id": 203,
+                    "name": "غازيات",
+                    "options": {
+                        "type": ["cola", "lemon", "orange"],
+                        "ice": ["yes", "no"]
+                    }
+                    },
+                    {
+                    "item_id": 301,
+                    "name": "برجر دجاج",
+                    "options": {
+                        "sauce": ["mayo", "garlic", "ketchup"],
+                        "cheese": ["yes", "no"],
+                        "spice_level": ["mild", "medium", "hot"]
+                    }
+                    },
+                    {
+                    "item_id": 302,
+                    "name": "برجر زنجر",
+                    "options": {
+                        "sauce": ["spicy_mayo", "garlic", "ketchup"],
+                        "cheese": ["yes", "no"],
+                        "spice_level": ["mild", "medium", "hot"]
+                    }
+                    },
+                    {
+                    "item_id": 303,
+                    "name": "برجر لحم",
+                    "options": {
+                        "sauce": ["bbq", "mayo", "ketchup"],
+                        "cheese": ["yes", "no"],
+                        "spice_level": ["mild", "medium", "hot"]
+                    }
+                    },
+                    {
+                    "item_id": 304,
+                    "name": "بطاطس",
+                    "options": {
+                        "sauce": ["ketchup", "garlic", "cheese"],
+                        "cheese": ["yes", "no"]
+                    }
+                    }
+                ]
+                ,
+                
+                get selectedItemOptions() {
+                    return this.pre_order_options.find(opt => opt.item_id === this.selectedItem?.id);
+                },
+
+                getOptionLabel(key) {
+                    const labels = {
+                        sugar: 'السكر',
+                        additives: 'الإضافات',
+                        spice_level: 'مستوى الحراق',
+                        cardamom: 'هيل',
+                        cream: 'كريمة',
+                        flavor: 'النكهة',
+                        type: 'النوع',
+                        mint: 'نعناع',
+                        sweetness: 'الحلاوة',
+                        lemon: 'ليمون',
+                        ice: 'ثلج (بارد)',
+                        sauce: 'الصوص',
+                        cheese: 'جبنة'
+                    };
+                    return labels[key] || key;
+                },
+
+                getValueLabel(value) {
+                    const labels = {
+                        // Sugar options
+                        none: 'بدون',
+                        light: 'خفيف',
+                        medium: 'وسط',
+                        heavy: 'زيادة',
+                        // Yes/No options
+                        yes: 'نعم',
+                        no: 'لا',
+                        // Spice levels
+                        mild: 'خفيف',
+                        strong: 'قوي',
+                        hot: 'حار',
+                        // Additives
+                        mint: 'نعناع',
+                        lemon: 'ليمون',
+                        herbs: 'أعشاب',
+                        // Drink types
+                        still: 'عادي',
+                        sparkling: 'فوار',
+                        // Sauces
+                        cheese: 'جبنة',
+                        mayo: 'مايونيز',
+                        garlic: 'ثوم',
+                        ketchup: 'كاتشب',
+                        bbq: 'باربكيو',
+                        spicy_mayo: 'مايونيز حار',
+                        // Flavors
+                        vanilla: 'فانيلا',
+                        caramel: 'كراميل',
+                        original: 'عادي',
+                        // Other drinks
+                        cola: 'كولا',
+                        orange: 'برتقال',
+                        // Tea types
+                        chamomile: 'بابونج',
+                        ginger: 'زنجبيل',
+                        // Sweetness
+                        less: 'خفيف',
+                        normal: 'عادي',
+                        extra: 'زيادة'
+                    };
+                    return labels[value] || value;
+                },
+
+                openPreOrderDialog(item) {
+                    this.selectedItem = item;
+                    this.preOrderQuantity = 1;
+                    this.preOrderNotes = '';
+                    this.selectedOptions = {};
+                    this.$refs.preOrderDialog.showModal();
+                },
+
+                toggleOption(key, value) {
+                    if (!this.selectedOptions[key]) {
+                        this.selectedOptions[key] = value;
+                    } else if (this.selectedOptions[key] === value) {
+                        delete this.selectedOptions[key];
+                    } else {
+                        this.selectedOptions[key] = value;
+                    }
+                },
+
+                isOptionSelected(key, value) {
+                    return this.selectedOptions[key] === value;
+                },
+                
+                confirmPreOrder() {
+                    if (!this.selectedItem) return;
+                    
+                    const order = {
+                        id: this.selectedItem.id,
+                        key: `${this.selectedItem.id}-${Date.now()}`, // Add unique key
+                        quantity: this.preOrderQuantity,
+                        notes: this.preOrderNotes || '',
+                        options: {...this.selectedOptions}
+                    };
+                    
+                    // Find existing order with same options and notes
+                    const existingOrderIndex = this.orders.findIndex(o => {
+                        if (o.id !== order.id) return false;
+                        if (o.notes !== order.notes) return false;
+                        
+                        // Compare options objects
+                        const orderOptionKeys = Object.keys(order.options);
+                        const existingOptionKeys = Object.keys(o.options || {});
+                        
+                        if (orderOptionKeys.length !== existingOptionKeys.length) return false;
+                        
+                        return orderOptionKeys.every(key => 
+                            order.options[key] === (o.options || {})[key]
+                        );
+                    });
+
+                    if (existingOrderIndex !== -1) {
+                        // Update existing order's quantity using reactive array methods
+                        const newOrders = [...this.orders];
+                        newOrders[existingOrderIndex].quantity += order.quantity;
+                        this.orders = newOrders;
+                    } else {
+                        // Add new order using reactive array methods
+                        this.orders = [...this.orders, order];
+                    }
+                    
+                    this.$refs.preOrderDialog.close();
+                },
+
                 addOrder(id) {
                     const existingOrder = this.orders.find(order => order.id === id);
                     if (existingOrder) {
