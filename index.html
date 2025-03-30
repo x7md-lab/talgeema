@@ -138,13 +138,13 @@
                         </p>
 
                         <!-- CTA Buttons -->
-                        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+                        <!--<div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
                             <button @click="document.getElementById('menu').scrollIntoView({behavior: 'smooth'})"
                                 class="px-8 py-3.5 bg-white text-primary-800 font-medium rounded-lg shadow-lg hover:bg-opacity-90 
                                             transform transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50">
                                 تصفح المنيو
                             </button>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
 
@@ -296,11 +296,28 @@
                         <template x-for="order in orders" :key="order.id">
                             <div class="flex items-center justify-between py-3 border-b">
                                 <div class="flex-1">
-                                    <h3 class="font-medium"
-                                        x-text="getItemById(order.id).name + ' (' + order.quantity + 'X)'"></h3>
-                                    <p class="text-sm text-gray-500">
-                                        <span x-text="getItemById(order.id).price"></span>
-                                    </p>
+                                    <h3 class="font-bold" x-text="getItemById(order.id).name + ' (' + order.quantity +'X)'"></h3>
+                                    <span class="text-sm text-gray-500 mt-1 inline-flex items-center gap-1.5">
+                                        <span x-text="getItemById(order.id).price"></span> <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]"
+                                        data-name="symbol of the Saudi Riyal"
+                                        viewBox="0 0 1124.14 1256.39">
+                                        <path fill="##231f20"
+                                            d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                                        <path fill="#231f20"
+                                            d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                                    </svg>
+                                    </span>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <button :disabled="order.quantity <= 1" @click="order.quantity > 1 ? order.quantity-- : removeOrder(order.id)" 
+                                            class="disabled:opacity-[20%] w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                            -
+                                        </button>
+                                        <span class="min-w-[2ch] text-center" x-text="order.quantity"></span>
+                                        <button @click="order.quantity++" 
+                                            class="w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <span class="text-primary-800"
@@ -377,9 +394,9 @@
         document.addEventListener('alpine:init', () => {
             window.PineconeRouter.settings.hash = true;
             window.PineconeRouter.settings.basePath = '/';
-            
-            // Add route change observer
-            const observer = new MutationObserver((mutations) => {
+
+             // Add route change observer
+             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (window.location.hash !== window.lastHash) {
                         window.lastHash = window.location.hash;
