@@ -160,7 +160,7 @@
                         class="col-start-2 row-start-2 text-4xl flex justify-center items-center transform translate-y-4">
                         🧊</div>
                     <div class="col-start-4 row-start-2 text-5xl flex justify-center items-center">🥤</div>
-                    <div class="col-start-1 row-start-3 text-4xl flex justify-center items-center">🍹</div>
+                    <div class="col-start-1 row-start-3 text-4xl flex justify-center items-center">🧃</div>
 
                     <!-- Fast Food -->
                     <div
@@ -213,11 +213,13 @@
                     <div class="overflow-x-auto flex-nowrap mb-8 -mx-4">
                         <div class="flex gap-2 px-4">
                             <template x-for="category in [...categories].reverse()" :key="category.id">
-                                <button
-                                    @click="filter.includes(category.id) ? filter = filter.filter(f => f !== category.id) : filter = [category.id]"
-                                    class="px-4 py-2 rounded-full text-sm transition-colors whitespace-nowrap" :class="filter.includes(category.id) ? 
-                                        'bg-primary-600 text-white' : 
-                                        'bg-primary-100 text-primary-800 hover:bg-primary-200'" x-text="category.name">
+                                <button @click="filter.includes(category.id) ? filter = filter.filter(f => f !== category.id) : filter = [category.id]" 
+                                    class="px-4 py-2 rounded-full text-sm transition-colors whitespace-nowrap inline-flex items-center gap-2" 
+                                    :class="filter.includes(category.id) ? 'bg-primary-600 text-white' : 'bg-primary-100 text-primary-800 hover:bg-primary-200'">
+                                    <span x-text="category.name"></span>
+                                    <svg x-show="filter.includes(category.id)" class="size-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6.293 6.293a1 1 0 0 1 1.414 0L12 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414L13.414 12l4.293 4.293a1 1 0 0 1-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L10.586 12 6.293 7.707a1 1 0 0 1 0-1.414z" fill="currentColor"/>
+                                    </svg>
                                 </button>
                             </template>
                         </div>
@@ -340,7 +342,7 @@
                                                     <div class="text-sm text-gray-600">
                                                         <span x-text="getOptionLabel(key) + ': '"></span>
                                                         <span class="text-gray-800"
-                                                            x-text="getValueLabel(value)"></span>
+                                                            x-text="Array.isArray(value) ? value.map(getValueLabel).join(', ') : getValueLabel(value)"></span>
                                                     </div>
                                                 </template>
                                             </div>
@@ -388,76 +390,83 @@
         <dialog x-ref="preOrderDialog"
             class="rounded-lg rtl:text-right md:m-auto md:max-w-md md:h-auto overflow-hidden">
             <div class="mt-12 bg-white w-full md:rounded-lg md:shadow-xl flex flex-col transition-transform transform"
-                x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0"
-                x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
-                <div class="p-6 flex flex-col overflow-y-auto" style="max-height: calc(80vh - 116px);">
-                    <div class="flex justify-between items-center mb-4 pb-2 border-b">
-                        <h2 class="text-2xl font-bold text-primary-800" x-text="selectedItem?.name || ''"></h2>
-                        <button @click="$refs.preOrderDialog.close()"
-                            class="text-gray-500 hover:text-primary-800 text-2xl">
-                            &times;
-                        </button>
-                    </div>
-
-                    <div class="space-y-4 mb-6">
-                        <!-- Quantity -->
-                        <div class="flex gap-4 items-center">
-                            <label class="font-medium">الكمية:</label>
-                            <div class="flex items-center gap-2">
-                                <button @click="preOrderQuantity > 1 ? preOrderQuantity-- : null"
-                                    class="disabled:opacity-[20%] w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                                    -
-                                </button>
-                                <span class="min-w-[3ch] text-center" x-text="preOrderQuantity"></span>
-                                <button @click="preOrderQuantity++"
-                                    class="w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                                    +
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Dynamic Options -->
-                        <template x-if="selectedItemOptions">
-                            <div class="space-y-4 border-y py-4">
-                                <template x-for="(values, key) in selectedItemOptions.options" :key="key">
-                                    <div>
-                                        <label class="font-medium block mb-2" x-text="getOptionLabel(key)"></label>
-                                        <div class="flex flex-wrap gap-2">
-                                            <template x-for="value in values" :key="value">
-                                                <button @click="toggleOption(key, value)" :class="isOptionSelected(key, value) ? 
-                                            'bg-primary-600 text-white' : 
-                                            'bg-primary-100 text-primary-800 hover:bg-primary-200'"
-                                                    class="px-3 py-1.5 rounded-full text-sm transition-colors"
-                                                    x-text="getValueLabel(value)">
-                                                </button>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </template>
-
-                        <!-- Notes -->
-                        <div>
-                            <label class="font-medium block mb-2">ملاحظات إضافية:</label>
-                            <textarea x-model="preOrderNotes"
-                                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
-                        </div>
-                    </div>
+            x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0"
+            x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
+            <!-- Fixed Header -->
+            <div class="p-6 border-b bg-white sticky top-0 z-10">
+                <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-primary-800" x-text="selectedItem?.name || ''"></h2>
+                <button @click="$refs.preOrderDialog.close()"
+                    class="text-gray-500 hover:text-primary-800 text-2xl">
+                    &times;
+                </button>
                 </div>
+            </div>
 
-                <!-- Fixed Footer -->
-                <div class="border-t p-6 bg-white sticky bottom-0">
-                    <div class="flex justify-between mb-4 font-bold">
-                        <span>السعر:</span>
-                        <span x-text="(selectedItem?.price * preOrderQuantity).toFixed(2)"></span>
-                    </div>
-                    <button @click="confirmPreOrder()"
-                        class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
-                        إضافة للسلة
+            <div class="p-6 flex flex-col overflow-y-auto" style="max-height: calc(80vh - 200px);">
+                <div class="space-y-4 mb-6">
+                <!-- Quantity -->
+                <div class="flex gap-4 items-center">
+                    <label class="font-medium">الكمية:</label>
+                    <div class="flex items-center gap-2">
+                    <button @click="preOrderQuantity > 1 ? preOrderQuantity-- : null"
+                        class="disabled:opacity-[20%] w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                        -
                     </button>
+                    <span class="min-w-[3ch] text-center" x-text="preOrderQuantity"></span>
+                    <button @click="preOrderQuantity++"
+                        class="w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                        +
+                    </button>
+                    </div>
                 </div>
+
+                <!-- Dynamic Options -->
+                <template x-if="selectedItemOptions">
+                    <div class="space-y-4 border-y py-4">
+                    <template x-for="(values, key) in selectedItemOptions.options" :key="key">
+                        <div>
+                        <label class="font-medium block mb-2" x-text="getOptionLabel(key)"></label>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="value in values" :key="value">
+                            <button @click="toggleOption(key, value)" :class="isOptionSelected(key, value) ? 
+                            'bg-primary-600 text-white' : 
+                            'bg-primary-100 text-primary-800 hover:bg-primary-200'"
+                                class="px-3 py-1.5 rounded-full text-sm transition-colors inline-flex items-center gap-2">
+                                <span x-text="getValueLabel(value)"></span>
+                                <!-- X icon that shows when selected -->
+                                <svg x-show="isOptionSelected(key, value)" class="size-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.293 6.293a1 1 0 0 1 1.414 0L12 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414L13.414 12l4.293 4.293a1 1 0 0 1-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L10.586 12 6.293 7.707a1 1 0 0 1 0-1.414z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    </div>
+                </template>
+
+                <!-- Notes -->
+                <div>
+                    <label class="font-medium block mb-2">ملاحظات إضافية:</label>
+                    <textarea x-model="preOrderNotes"
+                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+                </div>
+                </div>
+            </div>
+
+            <!-- Fixed Footer -->
+            <div class="border-t p-6 bg-white sticky bottom-0">
+                <div class="flex justify-between mb-4 font-bold">
+                <span>السعر:</span>
+                <span x-text="(selectedItem?.price * preOrderQuantity).toFixed(2)"></span>
+                </div>
+                <button @click="confirmPreOrder()"
+                class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                إضافة للسلة
+                </button>
+            </div>
             </div>
         </dialog>
 
@@ -669,18 +678,13 @@
                         {
                             "item_id": 103, // قهوة سعودية (Saudi Coffee) - *No sugar option*
                             "name": "قهوة سعودية",
-                            "options": {
-                                "cardamom": ["standard", "extra"], // الهيل: عادي، زيادة (عادة تكون بالهيل)
-                                "cloves": ["yes", "no"] // قرنفل/مسمار: نعم، لا
-                                // No sugar option as it's culturally uncommon
-                            }
                         },
                         {
                             "item_id": 104, // قهوة سوداء (Black Coffee - Americano/Filter)
                             "name": "قهوة سوداء",
                             "options": {
                                 "sugar": ["none", "light", "medium"], // سكر: بدون، خفيف، وسط
-                                "milk_or_cream": ["none", "milk", "cream"] // إضافة: بدون، حليب، كريمة
+                                "milk_or_cream": [ "milk", "cream" ] // إضافة: بدون، حليب، كريمة
                             }
                         },
                         {
@@ -704,16 +708,13 @@
                             "name": "موهيتو",
                             "options": {
                                 "flavor": ["classic", "strawberry", "passion_fruit", "raspberry"], // نكهة: كلاسيك، فراولة، باشن فروت، توت أحمر
-                                "mint": ["standard", "extra"], // نعناع: عادي، زيادة
-                                "sweetness": ["less", "normal", "extra"] // حلاوة: خفيف، عادي، زيادة
-                            }
+                                }
                         },
                         {
                             "item_id": 202, // ايس كركديه (Iced Hibiscus)
                             "name": "ايس كركديه",
                             "options": {
-                                "sweetness": ["less", "normal", "extra"], // حلاوة: خفيف، عادي، زيادة
-                                "lemon": ["yes", "no"] // ليمون: نعم، لا
+                                "lemon": ["yes"] // Changed from ["yes", "no"]
                             }
                         },
                         {
@@ -721,7 +722,7 @@
                             "name": "غازيات",
                             "options": {
                                 "type": ["cola", "diet_cola", "lemon_lime", "orange"], // نوع: كولا، دايت كولا، ليمون، برتقال
-                                "ice": ["yes", "no"] // ثلج: نعم، لا
+                                "ice": ["yes"] // Changed from ["yes", "no"]
                             }
                         },
                         {
@@ -735,15 +736,16 @@
                             "item_id": 301, // برجر دجاج (Chicken Burger)
                             "name": "برجر دجاج",
                             "options": {
-                                "cheese": ["yes", "no"], // جبنة: نعم، لا
-                                "sauce": ["mayonnaise", "ketchup", "garlic_sauce", "special_sauce"], // صوص: مايونيز، كاتشب، ثوم، صوص خاص
+                                "cheese": ["yes"], // Changed from ["yes", "no"]
+                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
                             }
                         },
                         {
                             "item_id": 302, // برجر زنجر (Zinger/Spicy Chicken Burger)
                             "name": "برجر زنجر",
                             "options": {
-                                "cheese": ["yes", "no"], // جبنة: نعم، لا
+                                "cheese": ["yes"], // Changed from ["yes", "no"]
+                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
                                 "sauce_level": ["standard", "extra", "less"], // مستوى الصوص (الحار): عادي، زيادة، قليل
                             }
                         },
@@ -751,17 +753,16 @@
                             "item_id": 303, // برجر لحم (Beef Burger)
                             "name": "برجر لحم",
                             "options": {
-                                "cheese": ["yes", "no"], // جبنة: نعم، لا
-                                "sauce": ["ketchup", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، مايونيز، باربكيو، صوص خاص
-                                "pickles": ["yes", "no"] // مخلل: نعم، لا
+                                "cheese": ["yes"], // Changed from ["yes", "no"]
+                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
                             }
                         },
                         {
                             "item_id": 304, // بطاطس (Fries)
                             "name": "بطاطس",
                             "options": {
-                                "side_sauce": ["ketchup", "garlic_sauce", "mayonnaise", "cheese_sauce", "none"], // صوص جانبي: كاتشب، ثوم، مايونيز، صوص جبنة، بدون
-                                "cheese_topping": ["yes", "no"] // إضافة جبنة فوق البطاطس: نعم، لا
+                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
+                                "cheese_topping": ["yes"] // Changed from ["yes", "no"]
                             }
                         }
                     ]
@@ -844,8 +845,10 @@
                         bbq_sauce: 'صوص باربكيو',
                         grilled: 'مشوي',
                         raw: 'نيء',
-                        cheese_sauce: 'صوص جبنة'
-
+                        lettuce: 'خس',
+                        tomato: 'طماطم',
+                        onion: 'بصل',
+                        cheese_sauce: 'صوص جبنة',
                     };
                     return labels[key] || key; // Return the Arabic label or the key itself if not found
                 },
@@ -873,17 +876,47 @@
                 },
 
                 toggleOption(key, value) {
-                    if (!this.selectedOptions[key]) {
-                        this.selectedOptions[key] = value;
-                    } else if (this.selectedOptions[key] === value) {
-                        delete this.selectedOptions[key];
+                    // List of option keys that should be single-select only
+                    const singleSelectOptions = [
+                        'sugar',
+                        'milk_or_cream',
+                        'flavor',
+                        'type',
+                        'temperature',
+                        'sweetener',
+                        'lemon',
+                        'ice',
+                        'cheese',
+                        'pickles',
+                        'side_sauce',
+                        'cheese_topping',
+                        'sweetness'
+                    ];
+
+                    if (singleSelectOptions.includes(key)) {
+                        // For single-select options, replace any existing selection
+                        if (this.isOptionSelected(key, value)) {
+                            delete this.selectedOptions[key];
+                        } else {
+                            this.selectedOptions[key] = [value];
+                        }
                     } else {
-                        this.selectedOptions[key] = value;
+                        // Original multi-select logic for other options
+                        if (!this.selectedOptions[key]) {
+                            this.selectedOptions[key] = [value];
+                        } else if (this.selectedOptions[key].includes(value)) {
+                            this.selectedOptions[key] = this.selectedOptions[key].filter(v => v !== value);
+                            if (this.selectedOptions[key].length === 0) {
+                                delete this.selectedOptions[key];
+                            }
+                        } else {
+                            this.selectedOptions[key].push(value);
+                        }
                     }
                 },
 
                 isOptionSelected(key, value) {
-                    return this.selectedOptions[key] === value;
+                    return this.selectedOptions[key]?.includes(value);
                 },
 
                 confirmPreOrder() {
@@ -909,7 +942,7 @@
                         if (orderOptionKeys.length !== existingOptionKeys.length) return false;
 
                         return orderOptionKeys.every(key =>
-                            order.options[key] === (o.options || {})[key]
+                            JSON.stringify(order.options[key]) === JSON.stringify((o.options || {})[key])
                         );
                     });
 
