@@ -136,15 +136,6 @@
                         <p class="text-xl md:text-2xl text-primary-100 mt-8 mb-10 leading-relaxed">
                             حياك في "تلقيمة".. تفضل أيش طلبك؟
                         </p>
-
-                        <!-- CTA Buttons -->
-                        <!--<div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
-                            <button @click="document.getElementById('menu').scrollIntoView({behavior: 'smooth'})"
-                                class="px-8 py-3.5 bg-white text-primary-800 font-medium rounded-lg shadow-lg hover:bg-opacity-90 
-                                            transform transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50">
-                                تصفح المنيو
-                            </button>
-                        </div>-->
                     </div>
                 </div>
 
@@ -280,6 +271,162 @@
                     </template>
                 </main>
             </template>
+
+            <template x-route="/invoice">
+                <div class="container mx-auto px-4 py-8 max-w-4xl">
+                  <!-- Stepper UI -->
+                  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <!-- Step 1: Phone Number -->
+                    <div x-show="currentStep === 1" class="p-6">
+                      <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">أدخل رقم هاتفك</h2>
+                        <p class="text-gray-600">للمتابعة إلى الفاتورة</p>
+                      </div>
+                      
+                      <div class="mb-4">
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2 text-right">رقم الجوال</label>
+                        <div class="relative flex items-center">
+                          <div dir="ltr" class="absolute left-0 flex items-center h-full px-3 border-r border-gray-300 bg-gray-50 text-gray-500 rounded-l-lg">
+                            +966
+                          </div>
+                          <input 
+                            type="tel" 
+                            id="phone" 
+                            x-model="phoneNumber" 
+                            placeholder="50 000 0000" 
+                            class="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg text-left [unicode-bidi:plaintext]"
+                            dir="ltr"
+                            inputmode="numeric"
+                            @keyup.enter="validatePhone"
+                          >
+                        </div>
+                        <p x-show="phoneError" class="mt-2 text-sm text-red-600 text-right" dir="rtl">
+                          <template x-if="phoneError.includes('+966')">
+                            <span>
+                              <span x-text="phoneError.split('+966')[0]"></span>
+                              <span class="font-bold [unicode-bidi:plaintext]" dir="ltr" 
+                                    x-text="'+966' + phoneError.split('+966')[1]?.split(')')[0]"></span>
+                              <span x-text="')' + (phoneError.split(')')[1] || '')"></span>
+                            </span>
+                          </template>
+                          <template x-if="!phoneError.includes('+966')">
+                            <span x-text="phoneError"></span>
+                          </template>
+                        </p>
+                      </div>
+                      
+                      <button 
+                        @click="validatePhone"
+                        class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors"
+                      >
+                        تأكيد والمتابعة
+                      </button>
+                    </div>
+                    
+                    <!-- Step 2: Invoice -->
+                    <div x-show="currentStep === 2" class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <!-- Header -->
+                            <div class="p-6 border-b bg-primary-700 text-white">
+                                <h1 class="text-2xl font-bold">فاتورة الطلب</h1>
+                                <p class="text-primary-200">تفاصيل طلبك من تلقيمة</p>
+                            </div>
+                
+                            <!-- Orders List -->
+                            <div class="p-6">
+                                <template x-for="order in orders" :key="order.key">
+                                    <div class="border-b mb-4 pb-4">
+                                        <details class="group" open>
+                                            <summary class="flex items-center justify-between py-2 cursor-pointer select-none appearance-none list-none [&::-webkit-details-marker]:hidden">
+                                                <div class="flex-1 flex items-start flex-col">
+                                                    <h3 class="font-bold inline-flex items-center gap-2">
+                                                        <template x-if="order.options && Object.keys(order.options).length > 0">
+                                                            <svg data-name="accordion-icon"
+                                                                class="transition-transform duration-200 size-5 text-primary-600 group-open:rotate-90"
+                                                                viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </template>
+                                                        <span
+                                                            x-text="getItemById(order.id).name + ' (' + order.quantity +'X)'"></span>
+                                                    </h3>
+                                                    <div class="text-sm text-gray-500 mt-1 inline-flex items-center gap-1.5">
+                                                        <span x-text="getItemById(order.id).price"></span>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]"
+                                                            data-name="symbol of the Saudi Riyal" viewBox="0 0 1124.14 1256.39">
+                                                            <path fill="#231f20"
+                                                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                                                            <path fill="#231f20"
+                                                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center gap-4">
+                                                    <span class="text-primary-800"
+                                                        x-text="(order.quantity * getItemById(order.id).price).toFixed(2)"></span>
+                                                </div>
+                                            </summary>
+                                            <div class="pb-3 px-4 space-y-2">
+                                                <template x-if="order.options && Object.keys(order.options).length > 0">
+                                                    <div class="space-y-1">
+                                                        <template x-for="(value, key) in order.options" :key="key">
+                                                            <div class="text-sm text-gray-600">
+                                                                <span x-text="getOptionLabel(key) + ': '"></span>
+                                                                <span class="text-gray-800"
+                                                                    x-text="Array.isArray(value) ? value.map(getValueLabel).join(', ') : getValueLabel(value)"></span>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template x-if="order.notes">
+                                                    <div class="text-sm">
+                                                        <span class="text-gray-600">ملاحظات: </span>
+                                                        <span class="text-gray-800" x-text="order.notes"></span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </details>
+                                        <!-- Quantity display (non-editable) -->
+                                        <div class="flex items-center gap-2 px-4 py-2 border-t">
+                                            <span class="text-sm text-gray-600">الكمية: <span x-text="order.quantity"></span></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                
+                            <!-- Footer -->
+                            <div class="border-t p-6 bg-gray-50">
+                                <div class="flex justify-between mb-4 font-bold text-lg">
+                                    <span>المجموع:</span>
+                                    <div class="flex gap-2 items-center justify-center">
+                                        <span x-text="total.toFixed(2)"></span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]" data-name="symbol of the Saudi Riyal"
+                                            viewBox="0 0 1124.14 1256.39">
+                                            <path fill="#231f20"
+                                                d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                                            <path fill="#231f20"
+                                                d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <a href="/" class="text-center bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition-colors">
+                                        العودة للقائمة
+                                    </a>
+                                    <button @click="submitOrder"
+                                        class="bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                                        تأكيد الطلب
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
         </div>
 
         <dialog x-ref="cartDialog" class="rounded-lg rtl:text-right md:m-auto md:max-w-md md:h-auto">
@@ -300,7 +447,7 @@
                         <template x-for="order in orders" :key="order.key">
                             <div class="border-b">
                                 <details class="group">
-                                    <summary class="flex items-center justify-between py-3 cursor-pointer select-none">
+                                    <summary class="flex items-center justify-between py-3 cursor-pointer select-none appearance-none list-none [&::-webkit-details-marker]:hidden">
                                         <div class="flex-1 flex items-start flex-col">
                                             <h3 class="font-bold inline-flex items-center gap-2">
                                                 <template x-if="order.options && Object.keys(order.options).length > 0">
@@ -329,7 +476,7 @@
                                         <div class="flex items-center gap-4">
                                             <span class="text-primary-800"
                                                 x-text="(order.quantity * getItemById(order.id).price).toFixed(2)"></span>
-                                            <button @click="removeOrder(order.id)"
+                                            <button @click="removeOrder(order.key)"
                                                 class="text-red-500 hover:text-red-700 text-sm">
                                                 إزالة
                                             </button>
@@ -358,7 +505,7 @@
                                 <!-- Quantity controls moved outside details -->
                                 <div class="flex items-center gap-2 px-4 py-2 border-t">
                                     <button :disabled="order.quantity <= 1"
-                                        @click="order.quantity > 1 ? order.quantity-- : removeOrder(order.id)"
+                                        @click="order.quantity > 1 ? order.quantity-- : removeOrder(order.key)"
                                         class="disabled:opacity-[20%] w-6 h-6 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
                                         -
                                     </button>
@@ -378,106 +525,106 @@
                             <span>المجموع:</span>
                             <span x-text="total.toFixed(2)"></span>
                         </div>
-                        <button @click="console.log('Orders:', orders)"
-                            class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
-                            اتمام الطلب
-                        </button>
+                            <button @click="()=> {$refs.cartDialog.close(); $router.navigate('/invoice')}"
+                                class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                                اتمام الطلب
+                            </button>
                     </div>
                 </div>
+            </div>
         </dialog>
 
         <!-- Pre-order Dialog -->
         <dialog x-ref="preOrderDialog"
             class="rounded-lg rtl:text-right md:m-auto md:max-w-md md:h-auto overflow-hidden">
             <div class="mt-12 bg-white w-full md:rounded-lg md:shadow-xl flex flex-col transition-transform transform"
-            x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0"
-            x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
-            <!-- Fixed Header -->
-            <div class="p-6 border-b bg-white sticky top-0 z-10">
-                <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-primary-800" x-text="selectedItem?.name || ''"></h2>
-                <button @click="$refs.preOrderDialog.close()"
-                    class="text-gray-500 hover:text-primary-800 text-2xl">
-                    &times;
-                </button>
-                </div>
-            </div>
-
-            <div class="p-6 flex flex-col overflow-y-auto" style="max-height: calc(80vh - 200px);">
-                <div class="space-y-4 mb-6">
-                <!-- Quantity -->
-                <div class="flex gap-4 items-center">
-                    <label class="font-medium">الكمية:</label>
-                    <div class="flex items-center gap-2">
-                    <button @click="preOrderQuantity > 1 ? preOrderQuantity-- : null"
-                        class="disabled:opacity-[20%] w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                        -
-                    </button>
-                    <span class="min-w-[3ch] text-center" x-text="preOrderQuantity"></span>
-                    <button @click="preOrderQuantity++"
-                        class="w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
-                        +
-                    </button>
+                x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0"
+                x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
+                <!-- Fixed Header -->
+                <div class="p-6 border-b bg-white sticky top-0 z-10">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-primary-800" x-text="selectedItem?.name || ''"></h2>
+                        <button @click="$refs.preOrderDialog.close()"
+                            class="text-gray-500 hover:text-primary-800 text-2xl">
+                            &times;
+                        </button>
                     </div>
                 </div>
 
-                <!-- Dynamic Options -->
-                <template x-if="selectedItemOptions">
-                    <div class="space-y-4 border-y py-4">
-                    <template x-for="(values, key) in selectedItemOptions.options" :key="key">
+                <div class="p-6 flex flex-col overflow-y-auto" style="max-height: calc(80vh - 200px);">
+                    <div class="space-y-4 mb-6">
+                        <!-- Quantity -->
+                        <div class="flex gap-4 items-center">
+                            <label class="font-medium">الكمية:</label>
+                            <div class="flex items-center gap-2">
+                                <button @click="preOrderQuantity > 1 ? preOrderQuantity-- : null"
+                                    class="disabled:opacity-[20%] w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                    -
+                                </button>
+                                <span class="min-w-[3ch] text-center" x-text="preOrderQuantity"></span>
+                                <button @click="preOrderQuantity++"
+                                    class="w-8 h-8 flex items-center justify-center rounded bg-primary-100 hover:bg-primary-200 text-primary-800">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Options -->
+                        <template x-if="selectedItem?.options">
+                            <div class="space-y-4 border-y py-4">
+                                <template x-for="option in selectedItem.options" :key="option.key">
+                                    <div>
+                                        <label class="font-medium block mb-2" x-text="option.name"></label>
+                                        <div class="flex flex-wrap gap-2">
+                                            <template x-for="value in option.values" :key="value.value">
+                                                <button @click="toggleOption(option.key, value.value)" 
+                                                    :class="isOptionSelected(option.key, value.value) ? 
+                                                    'bg-primary-600 text-white' : 
+                                                    'bg-primary-100 text-primary-800 hover:bg-primary-200'"
+                                                    class="px-3 py-1.5 rounded-full text-sm transition-colors inline-flex items-center gap-2">
+                                                    <span x-text="value.name"></span>
+                                                    <!-- X icon that shows when selected -->
+                                                    <svg x-show="isOptionSelected(option.key, value.value)" class="size-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M6.293 6.293a1 1 0 0 1 1.414 0L12 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414L13.414 12l4.293 4.293a1 1 0 0 1-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L10.586 12 6.293 7.707a1 1 0 0 1 0-1.414z" fill="currentColor"/>
+                                                    </svg>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- Notes -->
                         <div>
-                        <label class="font-medium block mb-2" x-text="getOptionLabel(key)"></label>
-                        <div class="flex flex-wrap gap-2">
-                            <template x-for="value in values" :key="value">
-                            <button @click="toggleOption(key, value)" :class="isOptionSelected(key, value) ? 
-                            'bg-primary-600 text-white' : 
-                            'bg-primary-100 text-primary-800 hover:bg-primary-200'"
-                                class="px-3 py-1.5 rounded-full text-sm transition-colors inline-flex items-center gap-2">
-                                <span x-text="getValueLabel(value)"></span>
-                                <!-- X icon that shows when selected -->
-                                <svg x-show="isOptionSelected(key, value)" class="size-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6.293 6.293a1 1 0 0 1 1.414 0L12 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414L13.414 12l4.293 4.293a1 1 0 0 1-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L10.586 12 6.293 7.707a1 1 0 0 1 0-1.414z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                            </template>
+                            <label class="font-medium block mb-2">ملاحظات إضافية:</label>
+                            <textarea x-model="preOrderNotes"
+                                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
                         </div>
-                        </div>
-                    </template>
                     </div>
-                </template>
+                </div>
 
-                <!-- Notes -->
-                <div>
-                    <label class="font-medium block mb-2">ملاحظات إضافية:</label>
-                    <textarea x-model="preOrderNotes"
-                    class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+                <!-- Fixed Footer -->
+                <div class="border-t p-6 bg-white sticky bottom-0">
+                    <div class="flex justify-between mb-4 font-bold">
+                        <span>السعر:</span>
+                        <span x-text="(selectedItem?.price * preOrderQuantity).toFixed(2)"></span>
+                    </div>
+                    <button @click="confirmPreOrder()"
+                        class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
+                        إضافة للسلة
+                    </button>
                 </div>
-                </div>
-            </div>
-
-            <!-- Fixed Footer -->
-            <div class="border-t p-6 bg-white sticky bottom-0">
-                <div class="flex justify-between mb-4 font-bold">
-                <span>السعر:</span>
-                <span x-text="(selectedItem?.price * preOrderQuantity).toFixed(2)"></span>
-                </div>
-                <button @click="confirmPreOrder()"
-                class="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors">
-                إضافة للسلة
-                </button>
-            </div>
             </div>
         </dialog>
 
         <!-- Fixed Bottom Bar -->
-        <div x-show="(orders.length > 0)"
+        <div x-show="(orders.length > 0) && !($router.path === '/invoice')"
             class="fixed bottom-0 left-0 right-0 bg-primary-600 text-white py-4 px-6 flex gap-3 justify-between items-center shadow-lg transition-transform transform"
             x-transition:enter="translate-y-full" x-transition:enter-end="translate-y-0"
             x-transition:leave="translate-y-0" x-transition:leave-end="translate-y-full">
             <div class="flex items-center gap-2">
-                <!-- <div class="size-16">
-            </div>-->
                 <span class="pr-16 text-lg font-bold" x-text="total.toFixed(2)"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-[2ch]" data-name="symbol of the Saudi Riyal"
                     viewBox="0 0 1124.14 1256.39">
@@ -487,10 +634,12 @@
                         d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
                 </svg>
             </div>
-            <button @click="console.log('Orders:', orders)"
-                class="bg-white text-primary-800 hover:bg-primary-700 px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
-                اتمام الطلب
-            </button>
+            <a href="/invoice">
+                <button 
+                    class="bg-white text-primary-800 hover:bg-primary-700 px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
+                    اتمام الطلب
+                </button>
+            </a>
         </div>
 
         <!-- Footer with updated links -->
@@ -540,108 +689,355 @@
 
             Alpine.data('menuApp', () => ({
                 filter: [],
-                "categories": [{
-                    "id": 1,
-                    "name": "المشروبات الساخنة",
-                    "items": [
-                        {
-                            "id": 101,
-                            "name": "شاي تلقيمة",
-                            "price": "4.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png"
-                        },
-                        {
-                            "id": 102,
-                            "name": "شاي كرك",
-                            "price": "7.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/159521319/prdimage/prd-img-1738868851729.png"
-                        },
-                        {
-                            "id": 103,
-                            "name": "قهوة سعودية",
-                            "price": "6.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/150320763/prdimage/53_%D9%82%D9%87%D9%88%D8%A9%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9.avif"
-                        },
-                        {
-                            "id": 104,
-                            "name": "قهوة سوداء",
-                            "price": "6.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/20881427/prdimage/prd-img-1738809193208.png"
-                        },
-                        {
-                            "id": 105,
-                            "name": "قهوة كريمر",
-                            "price": "7.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/174319986/prdimage/prd-img-1738809615833.png"
-                        },
-                        {
-                            "id": 106,
-                            "name": "مشروبات الطبيعة",
-                            "price": "6.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/229968281/prdimage/prd-img-1738842392605.png"
-                        }
-                    ]
-                },
-                {
-                    "id": 2,
-                    "name": "المشروبات الباردة",
-                    "items": [
-                        {
-                            "id": 201,
-                            "name": "موهيتو",
-                            "price": "10.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/166490327/prdimage/18_358168653_1480148992794988_3649923696135499434_n-Photoroom.png"
-                        },
-                        {
-                            "id": 202,
-                            "name": "ايس كركديه",
-                            "price": "8.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/238341261/prdimage/prd-img-1738874793638.png"
-                        },
-                        {
-                            "id": 203,
-                            "name": "غازيات",
-                            "price": "4.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/129076130/prdimage/prd-img-1738902555023.png"
-                        },
-                        {
-                            "id": 204,
-                            "name": "ماء",
-                            "price": "1.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/237555082/prdimage/prd-img-1738901677578.png"
-                        }
-                    ]
-                },
-                {
-                    "id": 3,
-                    "name": "الوجبات السريعة",
-                    "items": [
-                        {
-                            "id": 301,
-                            "name": "برجر دجاج",
-                            "price": "9.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/51172733/prdimage/prd-img-1738887140909.png"
-                        },
-                        {
-                            "id": 302,
-                            "name": "برجر زنجر",
-                            "price": "11.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/75308430/prdimage/prd-img-1738893900354.png"
-                        },
-                        {
-                            "id": 303,
-                            "name": "برجر لحم",
-                            "price": "10.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/219147099/prdimage/prd-img-1738896079418.png"
-                        },
-                        {
-                            "id": 304,
-                            "name": "بطاطس",
-                            "price": "5.00",
-                            "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/173064598/prdimage/66_Copycat-McDonalds-French-Fries-.jpg"
-                        }
-                    ]
-                }
+                categories: [
+                    {
+                        id: 1,
+                        name: "المشروبات الساخنة",
+                        items: [
+                            {
+                                id: 101,
+                                name: "شاي تلقيمة",
+                                price: "4.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png",
+                                options: [
+                                    {
+                                        key: "sugar",
+                                        name: "السكر",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "light", name: "خفيف" },
+                                            { value: "medium", name: "وسط" },
+                                            { value: "heavy", name: "زيادة" }
+                                        ]
+                                    },
+                                    {
+                                        key: "additives",
+                                        name: "الإضافات",
+                                        allow_multiple: true,
+                                        values: [
+                                            { value: "mint", name: "نعناع" },
+                                            { value: "habaq", name: "حبق" },
+                                            { value: "bardakosh_doosh", name: "بردقوش (دوش)" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 102,
+                                name: "شاي كرك",
+                                price: "7.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/159521319/prdimage/prd-img-1738868851729.png",
+                                options: [
+                                    {
+                                        key: "sugar",
+                                        name: "السكر",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "light", name: "خفيف" },
+                                            { value: "medium", name: "وسط" },
+                                            { value: "heavy", name: "زيادة" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 103,
+                                name: "قهوة سعودية",
+                                price: "6.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/150320763/prdimage/53_%D9%82%D9%87%D9%88%D8%A9%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9.avif"
+                            },
+                            {
+                                id: 104,
+                                name: "قهوة سوداء",
+                                price: "6.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/20881427/prdimage/prd-img-1738809193208.png",
+                                options: [
+                                    {
+                                        key: "sugar",
+                                        name: "السكر",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "light", name: "خفيف" },
+                                            { value: "medium", name: "وسط" }
+                                        ]
+                                    },
+                                    {
+                                        key: "milk_or_cream",
+                                        name: "الحليب أو الكريمة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "milk", name: "حليب" },
+                                            { value: "cream", name: "كريمة" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 105,
+                                name: "قهوة كريمر",
+                                price: "7.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/174319986/prdimage/prd-img-1738809615833.png",
+                                options: [
+                                    {
+                                        key: "sugar",
+                                        name: "السكر",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "light", name: "خفيف" },
+                                            { value: "medium", name: "وسط" }
+                                        ]
+                                    },
+                                    {
+                                        key: "flavor",
+                                        name: "النكهة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "original", name: "عادي" },
+                                            { value: "vanilla", name: "فانيلا" },
+                                            { value: "caramel", name: "كراميل" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 106,
+                                name: "مشروبات الطبيعة",
+                                price: "6.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/229968281/prdimage/prd-img-1738842392605.png",
+                                options: [
+                                    {
+                                        key: "type",
+                                        name: "النوع",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "chamomile", name: "بابونج" },
+                                            { value: "mint", name: "نعناع" },
+                                            { value: "ginger", name: "زنجبيل" },
+                                            { value: "anise", name: "يانسون" }
+                                        ]
+                                    },
+                                    {
+                                        key: "sweetener",
+                                        name: "التحلية",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "none", name: "بدون" },
+                                            { value: "sugar", name: "سكر" },
+                                            { value: "honey", name: "عسل" }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "المشروبات الباردة",
+                        items: [
+                            {
+                                id: 201,
+                                name: "موهيتو",
+                                price: "10.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/166490327/prdimage/18_358168653_1480148992794988_3649923696135499434_n-Photoroom.png",
+                                options: [
+                                    {
+                                        key: "flavor",
+                                        name: "النكهة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "classic", name: "كلاسيك" },
+                                            { value: "strawberry", name: "فراولة" },
+                                            { value: "passion_fruit", name: "باشن فروت" },
+                                            { value: "raspberry", name: "توت أحمر" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 202,
+                                name: "ايس كركديه",
+                                price: "8.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/238341261/prdimage/prd-img-1738874793638.png",
+                                options: [
+                                    {
+                                        key: "lemon",
+                                        name: "الليمون",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 203,
+                                name: "غازيات",
+                                price: "4.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/129076130/prdimage/prd-img-1738902555023.png",
+                                options: [
+                                    {
+                                        key: "type",
+                                        name: "النوع",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "cola", name: "كولا" },
+                                            { value: "diet_cola", name: "دايت كولا" },
+                                            { value: "lemon_lime", name: "ليمون ونعناع (سفن/سبرايت)" },
+                                            { value: "orange", name: "برتقال (ميراندا/فانتا)" }
+                                        ]
+                                    },
+                                    {
+                                        key: "ice",
+                                        name: "الثلج",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 204,
+                                name: "ماء",
+                                price: "1.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/237555082/prdimage/prd-img-1738901677578.png",
+                                options: [
+                                    {
+                                        key: "temperature",
+                                        name: "درجة الحرارة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "cold", name: "بارد" },
+                                            { value: "room_temp", name: "بدرجة حرارة الغرفة" }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "الوجبات السريعة",
+                        items: [
+                            {
+                                id: 301,
+                                name: "برجر دجاج",
+                                price: "9.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/51172733/prdimage/prd-img-1738887140909.png",
+                                options: [
+                                    {
+                                        key: "cheese",
+                                        name: "الجبنة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    },
+                                    {
+                                        key: "sauce",
+                                        name: "الصوص",
+                                        allow_multiple: true,
+                                        values: [
+                                            { value: "ketchup", name: "كاتشب" },
+                                            { value: "garlic_sauce", name: "صوص الثوم" },
+                                            { value: "mayonnaise", name: "مايونيز" },
+                                            { value: "bbq_sauce", name: "صوص باربكيو" },
+                                            { value: "special_sauce", name: "صوص خاص" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 302,
+                                name: "برجر زنجر",
+                                price: "11.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/75308430/prdimage/prd-img-1738893900354.png",
+                                options: [
+                                    {
+                                        key: "cheese",
+                                        name: "الجبنة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    },
+                                    {
+                                        key: "sauce",
+                                        name: "الصوص",
+                                        allow_multiple: true,
+                                        values: [
+                                            { value: "ketchup", name: "كاتشب" },
+                                            { value: "garlic_sauce", name: "صوص الثوم" },
+                                            { value: "mayonnaise", name: "مايونيز" },
+                                            { value: "bbq_sauce", name: "صوص باربكيو" },
+                                            { value: "special_sauce", name: "صوص خاص" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 303,
+                                name: "برجر لحم",
+                                price: "10.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/219147099/prdimage/prd-img-1738896079418.png",
+                                options: [
+                                    {
+                                        key: "cheese",
+                                        name: "الجبنة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    },
+                                    {
+                                        key: "sauce",
+                                        name: "الصوص",
+                                        allow_multiple: true,
+                                        values: [
+                                            { value: "ketchup", name: "كاتشب" },
+                                            { value: "garlic_sauce", name: "صوص الثوم" },
+                                            { value: "mayonnaise", name: "مايونيز" },
+                                            { value: "bbq_sauce", name: "صوص باربكيو" },
+                                            { value: "special_sauce", name: "صوص خاص" }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 304,
+                                name: "بطاطس",
+                                price: "5.00",
+                                imageSrc: "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/173064598/prdimage/66_Copycat-McDonalds-French-Fries-.jpg",
+                                options: [
+                                    {
+                                        key: "sauce",
+                                        name: "الصوص",
+                                        allow_multiple: true,
+                                        values: [
+                                            { value: "ketchup", name: "كاتشب" },
+                                            { value: "garlic_sauce", name: "صوص الثوم" },
+                                            { value: "mayonnaise", name: "مايونيز" },
+                                            { value: "bbq_sauce", name: "صوص باربكيو" },
+                                            { value: "special_sauce", name: "صوص خاص" }
+                                        ]
+                                    },
+                                    {
+                                        key: "cheese_topping",
+                                        name: "إضافة جبنة",
+                                        allow_multiple: false,
+                                        values: [
+                                            { value: "yes", name: "نعم" }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
                 ],
                 init() {
                     // Handle initial route
@@ -650,223 +1046,37 @@
                     }
                 },
                 showCart: false,
-                orders: [
-                    // {id: 101, quantity: 2},
-                    // {id: 301, quantity: 1},
-                ],
+                orders: [],
                 selectedItem: null,
                 preOrderQuantity: 1,
                 preOrderNotes: '',
                 selectedOptions: {},
-                pre_order_options:
-                    [
-                        {
-                            "item_id": 101, // شاي تلقيمة (Standard Tea)
-                            "name": "شاي تلقيمة",
-                            "options": {
-                                "sugar": ["none", "light", "medium", "heavy"], // مستويات السكر
-                                "additives": ["mint", "habaq", "bardakosh_doosh"] // إضافات: نعناع، حبق، بردقوش (دوش)
-                            }
-                        },
-                        {
-                            "item_id": 102, // شاي كرك (Karak Tea)
-                            "name": "شاي كرك",
-                            "options": {
-                                "sugar": ["none", "light", "medium", "heavy"], // مستويات السكر
-                            }
-                        },
-                        {
-                            "item_id": 103, // قهوة سعودية (Saudi Coffee) - *No sugar option*
-                            "name": "قهوة سعودية",
-                        },
-                        {
-                            "item_id": 104, // قهوة سوداء (Black Coffee - Americano/Filter)
-                            "name": "قهوة سوداء",
-                            "options": {
-                                "sugar": ["none", "light", "medium"], // سكر: بدون، خفيف، وسط
-                                "milk_or_cream": [ "milk", "cream" ] // إضافة: بدون، حليب، كريمة
-                            }
-                        },
-                        {
-                            "item_id": 105, // قهوة كريمر (Coffee with Creamer)
-                            "name": "قهوة كريمر",
-                            "options": {
-                                "sugar": ["none", "light", "medium"], // سكر: بدون، خفيف، وسط
-                                "flavor": ["original", "vanilla", "caramel"] // نكهة الكريمر: عادي، فانيلا، كراميل
-                            }
-                        },
-                        {
-                            "item_id": 106, // مشروبات الطبيعة (Herbal Teas)
-                            "name": "مشروبات الطبيعة",
-                            "options": {
-                                "type": ["chamomile", "mint", "ginger", "anise"], // نوع: بابونج، نعناع، زنجبيل، يانسون
-                                "sweetener": ["none", "sugar", "honey"] // تحلية: بدون، سكر، عسل
-                            }
-                        },
-                        {
-                            "item_id": 201, // موهيتو (Mojito)
-                            "name": "موهيتو",
-                            "options": {
-                                "flavor": ["classic", "strawberry", "passion_fruit", "raspberry"], // نكهة: كلاسيك، فراولة، باشن فروت، توت أحمر
-                                }
-                        },
-                        {
-                            "item_id": 202, // ايس كركديه (Iced Hibiscus)
-                            "name": "ايس كركديه",
-                            "options": {
-                                "lemon": ["yes"] // Changed from ["yes", "no"]
-                            }
-                        },
-                        {
-                            "item_id": 203, // غازيات (Soft Drinks)
-                            "name": "غازيات",
-                            "options": {
-                                "type": ["cola", "diet_cola", "lemon_lime", "orange"], // نوع: كولا، دايت كولا، ليمون، برتقال
-                                "ice": ["yes"] // Changed from ["yes", "no"]
-                            }
-                        },
-                        {
-                            "item_id": 204, // ماء (Water)
-                            "name": "ماء",
-                            "options": {
-                                "temperature": ["cold", "room_temp"] // درجة الحرارة: بارد، درجة حرارة الغرفة
-                            }
-                        },
-                        {
-                            "item_id": 301, // برجر دجاج (Chicken Burger)
-                            "name": "برجر دجاج",
-                            "options": {
-                                "cheese": ["yes"], // Changed from ["yes", "no"]
-                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
-                            }
-                        },
-                        {
-                            "item_id": 302, // برجر زنجر (Zinger/Spicy Chicken Burger)
-                            "name": "برجر زنجر",
-                            "options": {
-                                "cheese": ["yes"], // Changed from ["yes", "no"]
-                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
-                                "sauce_level": ["standard", "extra", "less"], // مستوى الصوص (الحار): عادي، زيادة، قليل
-                            }
-                        },
-                        {
-                            "item_id": 303, // برجر لحم (Beef Burger)
-                            "name": "برجر لحم",
-                            "options": {
-                                "cheese": ["yes"], // Changed from ["yes", "no"]
-                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
-                            }
-                        },
-                        {
-                            "item_id": 304, // بطاطس (Fries)
-                            "name": "بطاطس",
-                            "options": {
-                                "sauce": ["ketchup", "garlic_sauce", "mayonnaise", "bbq_sauce", "special_sauce"], // صوص: كاتشب، ثوم، مايونيز، باربكيو، صوص خاص
-                                "cheese_topping": ["yes"] // Changed from ["yes", "no"]
-                            }
-                        }
-                    ]
-                ,
-
-                get selectedItemOptions() {
-                    return this.pre_order_options.find(opt => opt.item_id === this.selectedItem?.id);
+                currentStep: 1,
+                phoneNumber: '',
+                phoneError: '',
+                fullPhoneNumber: '',
+                
+                validatePhone() {
+                    // Combine prefix with input value
+                    this.fullPhoneNumber = '+966' + this.phoneNumber;
+                    
+                    // Basic Saudi phone number validation (local part only)
+                    const saudiPhoneRegex = /^5\d\s?\d{3}\s?\d{4}$/;
+                    
+                    if (!this.phoneNumber) {
+                        this.phoneError = 'يرجى إدخال رقم الهاتف';
+                        return;
+                    }
+                    
+                    if (!saudiPhoneRegex.test(this.phoneNumber)) {
+                        this.phoneError = 'يرجى إدخال رقم هاتف سعودي صحيح (مثال: +966 50 000 0000)';
+                        return;
+                    }
+                    
+                    this.phoneError = '';
+                    this.currentStep = 2;
                 },
-
-                getOptionLabel(key) {
-                    const labels = {
-                        // General Keys
-                        sugar: 'السكر',
-                        additives: 'الإضافات',
-                        spice_level: 'مستوى الحراق',
-                        cardamom: 'الهيل',
-                        cloves: 'القرنفل (مسمار)',
-                        cream: 'كريمة',
-                        flavor: 'النكهة',
-                        type: 'النوع',
-                        mint: 'النعناع',
-                        sweetness: 'الحلاوة',
-                        lemon: 'الليمون',
-                        ice: 'الثلج',
-                        sauce: 'الصوص',
-                        cheese: 'الجبنة',
-                        milk_or_cream: 'الحليب أو الكريمة',
-                        sweetener: 'التحلية',
-                        temperature: 'درجة الحرارة',
-                        onions: 'البصل',
-                        pickles: 'المخلل',
-                        salt_level: 'مستوى الملح',
-                        side_sauce: 'صوص جانبي',
-                        cheese_topping: 'إضافة جبنة',
-                        sauce_level: 'مستوى الصوص',
-                        ginger: 'الزنجبيل',
-                        extra_jalapenos: 'هلابينو إضافي',
-
-                        // General Values
-                        none: 'بدون',
-                        light: 'خفيف',
-                        medium: 'وسط',
-                        heavy: 'زيادة',
-                        yes: 'نعم',
-                        no: 'لا',
-                        standard: 'عادي', // Can mean 'standard amount' or 'regular'
-                        extra: 'زيادة',
-                        less: 'قليل',
-                        normal: 'عادي', // For sweetness etc.
-                        regular: 'عادي', // For spice level
-                        spicy: 'سبايسي',
-                        hot: 'حار', // Could also be used for spice
-
-                        // Specific Additives/Types/Flavors
-                        mint: 'نعناع', // Repeated for clarity if used as value
-                        habaq: 'حبق',
-                        lemon: 'ليمون', // Repeated
-                        original: 'عادي', // For flavors
-                        vanilla: 'فانيلا',
-                        caramel: 'كراميل',
-                        chamomile: 'بابونج',
-                        milk: 'حليب',
-                        anise: 'يانسون',
-                        ginger: 'زنجبيل', // Repeated
-                        honey: 'عسل',
-                        classic: 'كلاسيك', // For Mojito flavor
-                        strawberry: 'فراولة',
-                        passion_fruit: 'باشن فروت',
-                        raspberry: 'توت أحمر',
-                        cola: 'كولا',
-                        diet_cola: 'دايت كولا',
-                        lemon_lime: 'ليمون ونعناع (سفن/سبرايت)',
-                        orange: 'برتقال (ميراندا/فانتا)',
-                        cold: 'بارد',
-                        room_temp: 'بدرجة حرارة الغرفة',
-                        mayonnaise: 'مايونيز',
-                        ketchup: 'كاتشب',
-                        garlic_sauce: 'صوص الثوم',
-                        special_sauce: 'صوص خاص',
-                        bbq_sauce: 'صوص باربكيو',
-                        grilled: 'مشوي',
-                        raw: 'نيء',
-                        lettuce: 'خس',
-                        tomato: 'طماطم',
-                        onion: 'بصل',
-                        cheese_sauce: 'صوص جبنة',
-                    };
-                    return labels[key] || key; // Return the Arabic label or the key itself if not found
-                },
-
-                getValueLabel(value) {
-                    // This reuses the same labels map as getOptionLabel
-                    const labels = {
-                        // General Keys (Included here for completeness, though primarily used by getOptionLabel)
-                        sugar: 'السكر', additives: 'الإضافات', spice_level: 'مستوى الحراق', cardamom: 'الهيل', cloves: 'القرنفل (مسمار)', cream: 'كريمة', flavor: 'النكهة', type: 'النوع', mint: 'النعناع', sweetness: 'الحلاوة', lemon: 'الليمون', ice: 'الثلج', sauce: 'الصوص', cheese: 'الجبنة', milk_or_cream: 'الحليب أو الكريمة', sweetener: 'التحلية', temperature: 'درجة الحرارة', onions: 'البصل', pickles: 'المخلل', salt_level: 'مستوى الملح', side_sauce: 'صوص جانبي', cheese_topping: 'إضافة جبنة', sauce_level: 'مستوى الصوص', ginger: 'الزنجبيل', extra_jalapenos: 'هلابينو إضافي',
-
-                        // General Values
-                        none: 'بدون', light: 'خفيف', medium: 'وسط', heavy: 'زيادة', yes: 'نعم', no: 'لا', standard: 'عادي', extra: 'زيادة', less: 'قليل', normal: 'عادي', regular: 'عادي', spicy: 'سبايسي', hot: 'حار',
-
-                        // Specific Additives/Types/Flavors
-                        mint: 'نعناع', habaq: 'حبق', bardakosh_doosh: 'بردقوش (دوش)', lemon: 'ليمون', original: 'عادي', vanilla: 'فانيلا', caramel: 'كراميل', chamomile: 'بابونج', anise: 'يانسون', ginger: 'زنجبيل', honey: 'عسل', classic: 'كلاسيك', strawberry: 'فراولة', passion_fruit: 'باشن فروت', raspberry: 'توت أحمر', cola: 'كولا', diet_cola: 'دايت كولا', lemon_lime: 'ليمون ونعناع (سفن/سبرايت)', orange: 'برتقال (ميراندا/فانتا)', cold: 'بارد', room_temp: 'بدرجة حرارة الغرفة', mayonnaise: 'مايونيز', ketchup: 'كاتشب', garlic_sauce: 'صوص الثوم', special_sauce: 'صوص خاص', bbq_sauce: 'صوص باربكيو', grilled: 'مشوي', raw: 'نيء', cheese_sauce: 'صوص جبنة', milk: 'حليب'
-                    };
-                    return labels[value] || value; // Return the Arabic label or the value itself if not found
-                },
+                
                 openPreOrderDialog(item) {
                     this.selectedItem = item;
                     this.preOrderQuantity = 1;
@@ -876,41 +1086,21 @@
                 },
 
                 toggleOption(key, value) {
-                    // List of option keys that should be single-select only
-                    const singleSelectOptions = [
-                        'sugar',
-                        'milk_or_cream',
-                        'flavor',
-                        'type',
-                        'temperature',
-                        'sweetener',
-                        'lemon',
-                        'ice',
-                        'cheese',
-                        'pickles',
-                        'side_sauce',
-                        'cheese_topping',
-                        'sweetness'
-                    ];
-
-                    if (singleSelectOptions.includes(key)) {
-                        // For single-select options, replace any existing selection
-                        if (this.isOptionSelected(key, value)) {
+                    if (!this.selectedOptions[key]) {
+                        this.selectedOptions[key] = [value];
+                    } else if (this.selectedOptions[key].includes(value)) {
+                        this.selectedOptions[key] = this.selectedOptions[key].filter(v => v !== value);
+                        if (this.selectedOptions[key].length === 0) {
                             delete this.selectedOptions[key];
-                        } else {
-                            this.selectedOptions[key] = [value];
                         }
                     } else {
-                        // Original multi-select logic for other options
-                        if (!this.selectedOptions[key]) {
-                            this.selectedOptions[key] = [value];
-                        } else if (this.selectedOptions[key].includes(value)) {
-                            this.selectedOptions[key] = this.selectedOptions[key].filter(v => v !== value);
-                            if (this.selectedOptions[key].length === 0) {
-                                delete this.selectedOptions[key];
-                            }
-                        } else {
+                        // Check if this option allows multiple values
+                        const optionConfig = this.selectedItem.options?.find(opt => opt.key === key);
+                        if (optionConfig?.allow_multiple) {
                             this.selectedOptions[key].push(value);
+                        } else {
+                            // For single-select options, replace the current value
+                            this.selectedOptions[key] = [value];
                         }
                     }
                 },
@@ -924,50 +1114,17 @@
 
                     const order = {
                         id: this.selectedItem.id,
-                        key: `${this.selectedItem.id}-${Date.now()}`, // Add unique key
+                        key: `${this.selectedItem.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                         quantity: this.preOrderQuantity,
                         notes: this.preOrderNotes || '',
                         options: { ...this.selectedOptions }
                     };
 
-                    // Find existing order with same options and notes
-                    const existingOrderIndex = this.orders.findIndex(o => {
-                        if (o.id !== order.id) return false;
-                        if (o.notes !== order.notes) return false;
-
-                        // Compare options objects
-                        const orderOptionKeys = Object.keys(order.options);
-                        const existingOptionKeys = Object.keys(o.options || {});
-
-                        if (orderOptionKeys.length !== existingOptionKeys.length) return false;
-
-                        return orderOptionKeys.every(key =>
-                            JSON.stringify(order.options[key]) === JSON.stringify((o.options || {})[key])
-                        );
-                    });
-
-                    if (existingOrderIndex !== -1) {
-                        // Update existing order's quantity using reactive array methods
-                        const newOrders = [...this.orders];
-                        newOrders[existingOrderIndex].quantity += order.quantity;
-                        this.orders = newOrders;
-                    } else {
-                        // Add new order using reactive array methods
-                        this.orders = [...this.orders, order];
-                    }
-
+                    // Add new order using reactive array methods
+                    this.orders = [...this.orders, order];
                     this.$refs.preOrderDialog.close();
                 },
 
-                addOrder(id) {
-                    const existingOrder = this.orders.find(order => order.id === id);
-                    if (existingOrder) {
-                        existingOrder.quantity++;
-                    } else {
-                        this.orders.push({ id, quantity: 1 });
-                    }
-                    // this.$refs.cartDialog.showModal();
-                },
                 getItemById(id) {
                     for (let category of this.categories) {
                         const item = category.items.find(item => item.id === id);
@@ -975,18 +1132,86 @@
                     }
                     return null;
                 },
+
                 get total() {
                     return this.orders.reduce((sum, order) => {
                         const item = this.getItemById(order.id);
                         return sum + (parseFloat(item.price) * order.quantity);
                     }, 0);
                 },
-                removeOrder(id) {
-                    this.orders = this.orders.filter(order => order.id !== id);
+
+                removeOrder(key) {
+                    this.orders = this.orders.filter(order => order.key !== key);
+                },
+
+                getOptionLabel(key) {
+                    const labels = {
+                        sugar: 'السكر',
+                        additives: 'الإضافات',
+                        milk_or_cream: 'الحليب أو الكريمة',
+                        flavor: 'النكهة',
+                        type: 'النوع',
+                        sweetener: 'التحلية',
+                        lemon: 'الليمون',
+                        ice: 'الثلج',
+                        sauce: 'الصوص',
+                        cheese: 'الجبنة',
+                        cheese_topping: 'إضافة جبنة',
+                        temperature: 'درجة الحرارة'
+                    };
+                    return labels[key] || key;
+                },
+
+                getValueLabel(value) {
+                    const labels = {
+                        none: 'بدون',
+                        light: 'خفيف',
+                        medium: 'وسط',
+                        heavy: 'زيادة',
+                        yes: 'نعم',
+                        mint: 'نعناع',
+                        habaq: 'حبق',
+                        bardakosh_doosh: 'بردقوش (دوش)',
+                        original: 'عادي',
+                        vanilla: 'فانيلا',
+                        caramel: 'كراميل',
+                        chamomile: 'بابونج',
+                        anise: 'يانسون',
+                        ginger: 'زنجبيل',
+                        honey: 'عسل',
+                        classic: 'كلاسيك',
+                        strawberry: 'فراولة',
+                        passion_fruit: 'باشن فروت',
+                        raspberry: 'توت أحمر',
+                        cola: 'كولا',
+                        diet_cola: 'دايت كولا',
+                        lemon_lime: 'ليمون ونعناع (سفن/سبرايت)',
+                        orange: 'برتقال (ميراندا/فانتا)',
+                        cold: 'بارد',
+                        room_temp: 'بدرجة حرارة الغرفة',
+                        ketchup: 'كاتشب',
+                        garlic_sauce: 'صوص الثوم',
+                        mayonnaise: 'مايونيز',
+                        bbq_sauce: 'صوص باربكيو',
+                        special_sauce: 'صوص خاص',
+                        milk: 'حليب',
+                        cream: 'كريمة'
+                    };
+                    return labels[value] || value;
+                },
+
+                submitOrder() {
+                    console.log('Submitting order:', {
+                        phone: this.fullPhoneNumber,
+                        orders: this.orders,
+                        total: this.total
+                    });
+                    alert('تم إرسال الطلب بنجاح! سيتم التواصل معك قريباً.');
+                    this.orders = [];
+                    this.$router.navigate('/');
                 }
             }));
         });
     </script>
 </body>
-
 </html>

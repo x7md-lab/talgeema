@@ -1,0 +1,42 @@
+option_value_id,option_key,option_value_key,option_value_label
+1,sugar,none,بدون
+2,sugar,light,خفيف
+3,sugar,medium,وسط
+4,sugar,heavy,زيادة
+5,additives,mint,نعناع
+6,additives,habaq,حبق
+7,additives,bardakosh_doosh,بردقوش (دوش)
+8,sauce,ketchup,كاتشب
+9,sauce,garlic_sauce,صوص الثوم
+10,cheese,yes,نعم
+11,flavor,classic,كلاسيك
+12,flavor,strawberry,فراولة
+13,flavor,passion_fruit,باشن فروت
+14,flavor,raspberry,توت أحمر
+15,flavor,original,عادي
+16,flavor,vanilla,فانيلا
+17,flavor,caramel,كراميل
+18,type,chamomile,بابونج
+19,type,mint,نعناع
+20,type,ginger,زنجبيل
+21,type,anise,يانسون
+22,type,cola,كولا
+23,type,diet_cola,دايت كولا
+24,type,lemon_lime,ليمون ونعناع
+25,type,orange,برتقال
+26,milk_or_cream,milk,حليب
+27,milk_or_cream,cream,كريمة
+28,sweetener,none,بدون
+29,sweetener,sugar,سكر
+30,sweetener,honey,عسل
+31,temperature,cold,بارد
+32,temperature,room_temp,درجة حرارة الغرفة
+33,sauce,mayonnaise,مايونيز
+34,sauce,bbq_sauce,صوص باربكيو
+35,sauce,special_sauce,صوص خاص
+36,sauce_level,standard,عادي
+37,sauce_level,extra,زيادة
+38,sauce_level,less,قليل
+39,lemon,yes,نعم
+40,ice,yes,نعم
+41,cheese_topping,yes,نعم

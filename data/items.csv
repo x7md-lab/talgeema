@@ -1,0 +1,15 @@
+item_id,item_name,price,image_src,category_id
+101,شاي تلقيمة,4.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png,1
+102,شاي كرك,7.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/159521319/prdimage/prd-img-1738868851729.png,1
+103,قهوة سعودية,6.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/150320763/prdimage/53_قهوة عربية.avif,1
+104,قهوة سوداء,6.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/20881427/prdimage/prd-img-1738809193208.png,1
+105,قهوة كريمر,7.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/174319986/prdimage/prd-img-1738809615833.png,1
+106,مشروبات الطبيعة,6.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/229968281/prdimage/prd-img-1738842392605.png,1
+201,موهيتو,10.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/166490327/prdimage/18_358168653_1480148992794988_3649923696135499434_n-Photoroom.png,2
+202,ايس كركديه,8.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/238341261/prdimage/prd-img-1738874793638.png,2
+203,غازيات,4.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/129076130/prdimage/prd-img-1738902555023.png,2
+204,ماء,1.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/237555082/prdimage/prd-img-1738901677578.png,2
+301,برجر دجاج,9.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/51172733/prdimage/prd-img-1738887140909.png,3
+302,برجر زنجر,11.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/75308430/prdimage/prd-img-1738893900354.png,3
+303,برجر لحم,10.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/219147099/prdimage/prd-img-1738896079418.png,3
+304,بطاطس,5.00,https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/173064598/prdimage/66_Copycat-McDonalds-French-Fries-.jpg,3
