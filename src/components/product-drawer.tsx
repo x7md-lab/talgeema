@@ -3,10 +3,12 @@ import {
   DrawerClose,
   DrawerContent,
 } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Toggle } from "@/components/ui/toggle";
 import { useCartStore } from "@/store/useCartStore";
 import type { Product as ApiProduct } from "@/types/menu";
+import { useForm, useWatch, Controller } from "react-hook-form";
 
 interface Product {
   id: number;
@@ -22,25 +24,18 @@ interface ProductDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface FormValues {
+  quantity: number;
+  options: Record<string, string | string[]>; // optionId -> valueId or array of valueIds
+  notes: string;
+}
+
 export default function ProductDrawer({ product, open, onOpenChange }: ProductDrawerProps) {
-  const [quantity, setQuantity] = useState(1);
-  const addItem = useCartStore((state) => state.addItem);
-
-  const handleAddToOrder = () => {
-    if (product) {
-      // In a real app, we would gather selected options here and pass them to addItem
-      // For now, we just add the base product
-      addItem(product, quantity);
-      setQuantity(1); // Reset quantity
-      onOpenChange(false); // Close drawer
-    }
-  };
-
   if (!product) return null;
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh] h-full sm:h-auto rounded-t-3xl outline-none">
+      <DrawerContent className="max-h-[90vh] h-full sm:h-auto rounded-t-3xl outline-none flex flex-col">
         {/* Custom Header with Close Button */}
         <div className="relative z-20 bg-surface-light dark:bg-surface-dark/90 backdrop-blur-md pt-3 pb-2 px-5 flex justify-between items-center shrink-0 border-b border-gray-100 dark:border-white/5">
           <div className="w-10"></div>
@@ -54,7 +49,67 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
           </DrawerClose>
         </div>
 
-        <div className="flex-1 overflow-y-auto no-scrollbar relative bg-surface-light dark:bg-background-dark pb-32">
+        <ProductForm key={product.id} product={product} onOpenChange={onOpenChange} />
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function ProductForm({ product, onOpenChange }: { product: Product; onOpenChange: (open: boolean) => void }) {
+  const addItem = useCartStore((state) => state.addItem);
+
+  const { register, control, handleSubmit, setValue, getValues } = useForm<FormValues>({
+    defaultValues: {
+      quantity: 1,
+      options: {},
+      notes: ""
+    }
+  });
+
+  const quantity = useWatch({ control, name: "quantity" });
+  const selectedOptions = useWatch({ control, name: "options" }) || {};
+
+  // Calculate total price
+  const calculateTotalPrice = () => {
+    let total = product.price;
+
+    // Iterate through selected options to add their prices
+    if (product.originalProduct?.options) {
+      Object.entries(selectedOptions).forEach(([optionId, selection]) => {
+        const option = product.originalProduct?.options.find(opt => opt.id === optionId);
+        if (!option) return;
+
+        const values = Array.isArray(selection) ? selection : [selection];
+        values.forEach(valId => {
+          if (!valId) return; // Skip null/undefined/empty string
+          const value = option.values.find(v => v.id === valId);
+          if (value && value.price) {
+            total += value.price;
+          }
+        });
+      });
+    }
+
+    return total * quantity;
+  };
+
+  const onSubmit = (data: FormValues) => {
+    if (product) {
+      // In a real app, pass options and notes to addItem
+      // Transform form data options to the structure expected by cart if needed
+      // For now we just use the simplified addItem
+      addItem(product, data.quantity);
+      onOpenChange(false);
+    }
+  };
+
+  return (
+    <>
+      <ScrollArea
+        className="flex-1 relative bg-surface-light dark:bg-background-dark"
+        viewportClassName="overscroll-y-none"
+      >
+        <div className="pb-32">
           {/* Product Image & Info */}
           <div className="px-5 pt-2 pb-6">
             <div className="relative w-full h-56 rounded-2xl overflow-hidden shadow-lg group">
@@ -97,26 +152,81 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
                 </span>
               </div>
               <div className="flex flex-col gap-3">
-                {option.values.map((val) => (
-                  <label key={val.id} className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
-                    <input
-                      className={`peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 ${option.allow_multiple ? 'rounded-md' : 'rounded-full'} bg-transparent checked:border-primary checked:bg-primary focus:outline-none focus:ring-0 transition-all`}
-                      name={option.key} // Using key for grouping radios
-                      type={option.allow_multiple ? "checkbox" : "radio"}
-                      value={val.value}
-                    />
-                    <div className="flex grow justify-between items-center">
-                      <span className="text-gray-900 dark:text-white font-semibold text-sm peer-checked:text-primary">
-                        {val.name}
-                      </span>
-                      {val.price > 0 && (
-                        <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                          +{val.price} ريال
-                        </span>
-                      )}
-                    </div>
-                  </label>
-                ))}
+                <Controller
+                  control={control}
+                  name={`options.${option.id}`}
+                  rules={{ required: option.required }}
+                  render={({ field }) => (
+                    <>
+                      {option.values.map((val) => {
+                        const isSelected = option.allow_multiple
+                          ? Array.isArray(field.value) && field.value.includes(val.id)
+                          : field.value === val.id;
+
+                        return (
+                          <Toggle
+                            key={val.id}
+                            pressed={isSelected}
+                            onPressedChange={(pressed) => {
+                              if (option.allow_multiple) {
+                                const current = Array.isArray(field.value) ? field.value : [];
+                                if (pressed) {
+                                  field.onChange([...current, val.id]);
+                                } else {
+                                  field.onChange(current.filter((id: string) => id !== val.id));
+                                }
+                              } else {
+                                // Single select (Radio)
+                                if (pressed) {
+                                  field.onChange(val.id);
+                                } else {
+                                  // Trying to uncheck
+                                  if (!option.required) {
+                                    field.onChange("");
+                                  }
+                                }
+                              }
+                            }}
+                            variant="outline"
+                            className="w-full h-auto justify-between p-4 rounded-xl border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-surface-dark/50 hover:text-inherit data-[pressed]:border-primary data-[pressed]:bg-primary/5 dark:data-[pressed]:bg-primary/10 data-[pressed]:text-inherit shadow-none"
+                          >
+                            <div className="flex items-center gap-4 w-full">
+                              {/* Custom Checkbox/Radio Indicator */}
+                              <div className={`flex items-center justify-center w-5 h-5 border-2 transition-all shrink-0 ${
+                                option.allow_multiple ? 'rounded-md' : 'rounded-full'
+                              } ${
+                                isSelected 
+                                  ? 'border-primary bg-primary' 
+                                  : 'border-gray-300 dark:border-gray-500 bg-transparent'
+                              }`}>
+                                {isSelected && (
+                                  option.allow_multiple ? (
+                                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  ) : (
+                                    <div className="w-2 h-2 rounded-full bg-white" />
+                                  )
+                                )}
+                              </div>
+
+                              <div className="flex grow justify-between items-center text-left">
+                                <span className={`font-semibold text-sm ${isSelected ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                                  {val.name}
+                                </span>
+                                {val.price > 0 && (
+                                  <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                                    +{val.price} ريال
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </Toggle>
+                        );
+                      })}
+                    </>
+                  )}
+                />
               </div>
             </div>
           ))}
@@ -130,40 +240,41 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
                 className="w-full bg-gray-50 dark:bg-surface-dark border border-gray-200 dark:border-white/10 rounded-2xl p-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
                 placeholder="مثلاً: بدون سكر، الصلصة على الجانب..."
                 rows={3}
+                {...register("notes")}
               ></textarea>
             </div>
           </div>
         </div>
+      </ScrollArea>
 
-        {/* Footer Actions */}
-        <div className="absolute bottom-0 left-0 w-full z-30 bg-surface-light dark:bg-background-dark border-t border-gray-100 dark:border-white/5 px-5 py-4 pb-8 sm:pb-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)]">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-between gap-1 bg-gray-100 dark:bg-surface-dark rounded-full p-1.5 h-[56px] min-w-[130px]">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm flex items-center justify-center text-gray-900 dark:text-white hover:text-primary active:scale-95 transition-all cursor-pointer"
-              >
-                <span className="text-xl font-bold">-</span>
-              </button>
-              <span className="text-lg font-bold text-gray-900 dark:text-white w-6 text-center tabular-nums">
-                {quantity}
-              </span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm flex items-center justify-center text-gray-900 dark:text-white hover:text-primary active:scale-95 transition-all cursor-pointer"
-              >
-                <span className="text-xl font-bold">+</span>
-              </button>
-            </div>
-            <Button 
-              onClick={handleAddToOrder}
-              className="flex-1 h-[56px] rounded-full text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
+      {/* Footer Actions */}
+      <div className="absolute bottom-0 left-0 w-full z-30 bg-surface-light dark:bg-background-dark border-t border-gray-100 dark:border-white/5 px-5 py-4 pb-8 sm:pb-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-1 bg-gray-100 dark:bg-surface-dark rounded-full p-1.5 h-[56px] min-w-[130px]">
+            <button
+              onClick={() => setValue("quantity", Math.max(1, quantity - 1))}
+              className="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm flex items-center justify-center text-gray-900 dark:text-white hover:text-primary active:scale-95 transition-all cursor-pointer"
             >
-              إضافة {(product.price * quantity).toFixed(2)} ريال
-            </Button>
+              <span className="text-xl font-bold">-</span>
+            </button>
+            <span className="text-lg font-bold text-gray-900 dark:text-white w-6 text-center tabular-nums">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setValue("quantity", quantity + 1)}
+              className="w-10 h-10 rounded-full bg-white dark:bg-white/10 shadow-sm flex items-center justify-center text-gray-900 dark:text-white hover:text-primary active:scale-95 transition-all cursor-pointer"
+            >
+              <span className="text-xl font-bold">+</span>
+            </button>
           </div>
+          <Button 
+            onClick={handleSubmit(onSubmit)}
+            className="flex-1 h-[56px] rounded-full text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
+          >
+            إضافة {calculateTotalPrice().toFixed(2)} ريال
+          </Button>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </div>
+    </>
   );
 }
