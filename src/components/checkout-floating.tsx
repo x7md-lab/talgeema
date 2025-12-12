@@ -1,15 +1,19 @@
 import { useCartStore } from "@/store/useCartStore";
+import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 
 export default function CheckoutFloating() {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const totalPrice = useCartStore((state) => state.getTotalPrice());
+  const setCartOpen = useUIStore((state) => state.setCartOpen);
 
   if (totalItems === 0) return null;
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 px-4 z-50 flex justify-center pointer-events-none">
+    <div className="fixed bottom-6 left-0 right-0 px-4 z-40 flex justify-center pointer-events-none">
       <button 
+        onClick={() => setCartOpen(true)}
         className={cn(
           "w-full max-w-md flex items-center justify-between bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-xl shadow-green-600/30 transition-all active:scale-[0.98] cursor-pointer pointer-events-auto",
           "animate-in slide-in-from-bottom-4 duration-300"
@@ -26,7 +30,7 @@ export default function CheckoutFloating() {
         </div>
         <div className="flex items-center gap-2">
           <span className="font-bold text-lg">{totalPrice.toFixed(2)} ريال</span>
-          <span className="material-symbols-outlined rtl:rotate-180">arrow_forward</span>
+          <ArrowRight className="w-5 h-5 rtl:rotate-180" />
         </div>
       </button>
     </div>

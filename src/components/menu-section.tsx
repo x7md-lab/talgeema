@@ -1,33 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import ProductDrawer from "@/components/product-drawer";
 import { useMenuStore } from "@/store/useMenuStore";
+import { useUIStore } from "@/store/useUIStore";
 import type { Product as ApiProduct } from "@/types/menu";
-
-// Adapter interface to match what ProductDrawer and Cart expect (for now)
-// Ideally we should refactor the whole app to use the ApiProduct type
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  originalProduct?: ApiProduct; // Keep reference to original for options
-}
 
 export default function MenuSection() {
   const { categories, isLoading, error } = useMenuStore();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { openProductDrawer } = useUIStore();
 
   const handleAddToCart = (item: ApiProduct) => {
-    setSelectedProduct({
+    openProductDrawer({
       id: item.id,
       name: item.name,
       price: parseFloat(item.price),
       image: item.imageSrc,
       originalProduct: item
     });
-    setIsDrawerOpen(true);
   };
 
   if (isLoading) return <div className="text-center py-10">جاري التحميل...</div>;
@@ -77,12 +64,6 @@ export default function MenuSection() {
           </div>
         </section>
       ))}
-
-      <ProductDrawer 
-        product={selectedProduct} 
-        open={isDrawerOpen} 
-        onOpenChange={setIsDrawerOpen} 
-      />
     </div>
   );
 }

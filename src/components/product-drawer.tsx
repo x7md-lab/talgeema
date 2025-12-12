@@ -7,8 +7,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { useCartStore } from "@/store/useCartStore";
+import { useUIStore } from "@/store/useUIStore";
 import type { Product as ApiProduct } from "@/types/menu";
 import { useForm, useWatch, Controller } from "react-hook-form";
+import { X } from "lucide-react";
 
 interface Product {
   id: number;
@@ -18,59 +20,75 @@ interface Product {
   originalProduct?: ApiProduct;
 }
 
-interface ProductDrawerProps {
-  product: Product | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
 interface FormValues {
   quantity: number;
   options: Record<string, string | string[]>; // optionId -> valueId or array of valueIds
   notes: string;
 }
 
-export default function ProductDrawer({ product, open, onOpenChange }: ProductDrawerProps) {
-  if (!product) return null;
+export default function ProductDrawer() {
+  const { 
+    isProductDrawerOpen, 
+    closeProductDrawer, 
+    selectedProduct, 
+    editingCartItem 
+  } = useUIStore();
+
+  if (!selectedProduct) return null;
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh] h-full sm:h-auto rounded-t-3xl outline-none flex flex-col">
-        {/* Custom Header with Close Button */}
-        <div className="relative z-20 bg-surface-light dark:bg-surface-dark/90 backdrop-blur-md pt-3 pb-2 px-5 flex justify-between items-center shrink-0 border-b border-gray-100 dark:border-white/5">
-          <div className="w-10"></div>
-          <DrawerClose>
-            <button
+    <Drawer open={isProductDrawerOpen} onOpenChange={(open) => !open && closeProductDrawer()}>
+      <DrawerContent className="max-h-[90vh] h-full sm:h-auto rounded-t-[32px] outline-none flex flex-col bg-background-light dark:bg-background-dark">
+        {/* Header */}
+        <div className="flex-none bg-surface-light dark:bg-surface-dark/90 backdrop-blur-md pb-4 pt-3 px-6 border-b border-gray-100 dark:border-white/5 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          {/* Handle */}
+          <div className="mx-auto w-12 h-1.5 bg-gray-200 dark:bg-white/10 rounded-full mb-5" />
+          
+          <div className="flex items-center justify-between">
+            {/* Title */}
+            <div className="flex-1 flex flex-col justify-center">
+               <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-none">
+                 {editingCartItem ? "تعديل الطلب" : "تفاصيل المنتج"}
+               </h2>
+            </div>
+
+            {/* Close Button */}
+            <DrawerClose
               aria-label="Close modal"
               className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-50 dark:bg-white/10 text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/20 transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-xl font-bold">✕</span>
-            </button>
-          </DrawerClose>
+              <X className="w-5 h-5 font-bold" />
+            </DrawerClose>
+          </div>
         </div>
 
-        <ProductForm key={product.id} product={product} onOpenChange={onOpenChange} />
+        <ProductForm 
+          key={editingCartItem ? `edit-${editingCartItem.cartId}` : selectedProduct.id} 
+          product={selectedProduct} 
+          editItem={editingCartItem}
+          onClose={closeProductDrawer} 
+        />
       </DrawerContent>
     </Drawer>
   );
 }
 
-function ProductForm({ product, onOpenChange }: { product: Product; onOpenChange: (open: boolean) => void }) {
-  const addItem = useCartStore((state) => state.addItem);
+function ProductForm({ product, editItem, onClose }: { product: Product; editItem?: any; onClose: () => void }) {
+  const { addItem, removeItem } = useCartStore();
 
-  const { register, control, handleSubmit, setValue, getValues } = useForm<FormValues>({
+  const { register, control, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
-      quantity: 1,
-      options: {},
-      notes: ""
+      quantity: editItem ? editItem.quantity : 1,
+      options: editItem ? editItem.selectedOptions : {},
+      notes: editItem ? editItem.notes : ""
     }
   });
 
   const quantity = useWatch({ control, name: "quantity" });
   const selectedOptions = useWatch({ control, name: "options" }) || {};
 
-  // Calculate total price
-  const calculateTotalPrice = () => {
+  // Calculate unit price based on selected options
+  const calculateUnitPrice = () => {
     let total = product.price;
 
     // Iterate through selected options to add their prices
@@ -90,16 +108,48 @@ function ProductForm({ product, onOpenChange }: { product: Product; onOpenChange
       });
     }
 
-    return total * quantity;
+    return total;
+  };
+
+  const calculateTotalPrice = () => {
+    return calculateUnitPrice() * quantity;
+  };
+
+  const getSelectedOptionsText = () => {
+    const texts: string[] = [];
+    if (product.originalProduct?.options) {
+      Object.entries(selectedOptions).forEach(([optionId, selection]) => {
+        const option = product.originalProduct?.options.find(opt => opt.id === optionId);
+        if (!option) return;
+
+        const values = Array.isArray(selection) ? selection : [selection];
+        values.forEach(valId => {
+          if (!valId) return;
+          const value = option.values.find(v => v.id === valId);
+          if (value) {
+            // e.g. "Size: Large" or just "Large" depending on preference. 
+            // Let's use "OptionName: ValueName" for clarity
+            texts.push(`${option.name}: ${value.name}`);
+          }
+        });
+      });
+    }
+    return texts;
   };
 
   const onSubmit = (data: FormValues) => {
     if (product) {
-      // In a real app, pass options and notes to addItem
-      // Transform form data options to the structure expected by cart if needed
-      // For now we just use the simplified addItem
-      addItem(product, data.quantity);
-      onOpenChange(false);
+      if (editItem) {
+        removeItem(editItem.cartId);
+      }
+      
+      addItem(product, data.quantity, {
+        options: data.options,
+        selectedOptionsText: getSelectedOptionsText(),
+        notes: data.notes,
+        unitPrice: calculateUnitPrice()
+      });
+      onClose();
     }
   };
 
@@ -271,7 +321,7 @@ function ProductForm({ product, onOpenChange }: { product: Product; onOpenChange
             onClick={handleSubmit(onSubmit)}
             className="flex-1 h-[56px] rounded-full text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
           >
-            إضافة {calculateTotalPrice().toFixed(2)} ريال
+            {editItem ? "تحديث" : "إضافة"} {calculateTotalPrice().toFixed(2)} ريال
           </Button>
         </div>
       </div>
