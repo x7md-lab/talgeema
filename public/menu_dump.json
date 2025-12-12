@@ -1,0 +1,727 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "المشروبات الساخنة",
+      "items": [
+        {
+          "id": 101,
+          "name": "شاي تلقيمة",
+          "price": "4.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png",
+          "options": [
+            {
+              "id": "1",
+              "key": "sugar",
+              "name": "السكر",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "1",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "2",
+                  "value": "light",
+                  "name": "خفيف",
+                  "price": 0
+                },
+                {
+                  "id": "3",
+                  "value": "medium",
+                  "name": "وسط",
+                  "price": 0
+                },
+                {
+                  "id": "4",
+                  "value": "heavy",
+                  "name": "زيادة",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "2",
+              "key": "additives",
+              "name": "الإضافات",
+              "allow_multiple": true,
+              "required": false,
+              "values": [
+                {
+                  "id": "5",
+                  "value": "mint",
+                  "name": "نعناع",
+                  "price": 0
+                },
+                {
+                  "id": "6",
+                  "value": "habaq",
+                  "name": "حبق",
+                  "price": 0
+                },
+                {
+                  "id": "7",
+                  "value": "bardakosh_doosh",
+                  "name": "بردقوش (دوش)",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "name": "شاي كرك",
+          "price": "7.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/159521319/prdimage/prd-img-1738868851729.png",
+          "options": [
+            {
+              "id": "3",
+              "key": "sugar",
+              "name": "السكر",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "8",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "9",
+                  "value": "light",
+                  "name": "خفيف",
+                  "price": 0
+                },
+                {
+                  "id": "10",
+                  "value": "medium",
+                  "name": "وسط",
+                  "price": 0
+                },
+                {
+                  "id": "11",
+                  "value": "heavy",
+                  "name": "زيادة",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "name": "قهوة سعودية",
+          "price": "6.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/150320763/prdimage/53_%D9%82%D9%87%D9%88%D8%A9%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9.avif",
+          "options": []
+        },
+        {
+          "id": 104,
+          "name": "قهوة سوداء",
+          "price": "6.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/20881427/prdimage/prd-img-1738809193208.png",
+          "options": [
+            {
+              "id": "4",
+              "key": "sugar",
+              "name": "السكر",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "12",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "13",
+                  "value": "light",
+                  "name": "خفيف",
+                  "price": 0
+                },
+                {
+                  "id": "14",
+                  "value": "medium",
+                  "name": "وسط",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "5",
+              "key": "milk_or_cream",
+              "name": "الحليب أو الكريمة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "15",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "16",
+                  "value": "milk",
+                  "name": "حليب",
+                  "price": 0
+                },
+                {
+                  "id": "17",
+                  "value": "cream",
+                  "name": "كريمة",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "name": "قهوة كريمر",
+          "price": "7.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/174319986/prdimage/prd-img-1738809615833.png",
+          "options": [
+            {
+              "id": "6",
+              "key": "sugar",
+              "name": "السكر",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "18",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "19",
+                  "value": "light",
+                  "name": "خفيف",
+                  "price": 0
+                },
+                {
+                  "id": "20",
+                  "value": "medium",
+                  "name": "وسط",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "7",
+              "key": "flavor",
+              "name": "النكهة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "21",
+                  "value": "original",
+                  "name": "عادي",
+                  "price": 0
+                },
+                {
+                  "id": "22",
+                  "value": "vanilla",
+                  "name": "فانيلا",
+                  "price": 0
+                },
+                {
+                  "id": "23",
+                  "value": "caramel",
+                  "name": "كراميل",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "name": "مشروبات الطبيعة",
+          "price": "6.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/229968281/prdimage/prd-img-1738842392605.png",
+          "options": [
+            {
+              "id": "8",
+              "key": "type",
+              "name": "النوع",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "24",
+                  "value": "chamomile",
+                  "name": "بابونج",
+                  "price": 0
+                },
+                {
+                  "id": "25",
+                  "value": "mint",
+                  "name": "نعناع",
+                  "price": 0
+                },
+                {
+                  "id": "26",
+                  "value": "ginger",
+                  "name": "زنجبيل",
+                  "price": 0
+                },
+                {
+                  "id": "27",
+                  "value": "anise",
+                  "name": "يانسون",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "9",
+              "key": "sweetener",
+              "name": "التحلية",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "28",
+                  "value": "none",
+                  "name": "بدون",
+                  "price": 0
+                },
+                {
+                  "id": "29",
+                  "value": "sugar",
+                  "name": "سكر",
+                  "price": 0
+                },
+                {
+                  "id": "30",
+                  "value": "honey",
+                  "name": "عسل",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "المشروبات الباردة",
+      "items": [
+        {
+          "id": 201,
+          "name": "موهيتو",
+          "price": "10.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/166490327/prdimage/18_358168653_1480148992794988_3649923696135499434_n-Photoroom.png",
+          "options": [
+            {
+              "id": "10",
+              "key": "flavor",
+              "name": "النكهة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "31",
+                  "value": "classic",
+                  "name": "كلاسيك",
+                  "price": 0
+                },
+                {
+                  "id": "32",
+                  "value": "strawberry",
+                  "name": "فراولة",
+                  "price": 0
+                },
+                {
+                  "id": "33",
+                  "value": "passion_fruit",
+                  "name": "باشن فروت",
+                  "price": 0
+                },
+                {
+                  "id": "34",
+                  "value": "raspberry",
+                  "name": "توت أحمر",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 202,
+          "name": "ايس كركديه",
+          "price": "8.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/238341261/prdimage/prd-img-1738874793638.png",
+          "options": [
+            {
+              "id": "11",
+              "key": "lemon",
+              "name": "الليمون",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "35",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 203,
+          "name": "غازيات",
+          "price": "4.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/129076130/prdimage/prd-img-1738902555023.png",
+          "options": [
+            {
+              "id": "12",
+              "key": "type",
+              "name": "النوع",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "36",
+                  "value": "cola",
+                  "name": "كولا",
+                  "price": 0
+                },
+                {
+                  "id": "37",
+                  "value": "diet_cola",
+                  "name": "دايت كولا",
+                  "price": 0
+                },
+                {
+                  "id": "38",
+                  "value": "lemon_lime",
+                  "name": "ليمون ونعناع (سفن/سبرايت)",
+                  "price": 0
+                },
+                {
+                  "id": "39",
+                  "value": "orange",
+                  "name": "برتقال (ميراندا/فانتا)",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "13",
+              "key": "ice",
+              "name": "الثلج",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "40",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 204,
+          "name": "ماء",
+          "price": "1.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/237555082/prdimage/prd-img-1738901677578.png",
+          "options": [
+            {
+              "id": "14",
+              "key": "temperature",
+              "name": "درجة الحرارة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "41",
+                  "value": "cold",
+                  "name": "بارد",
+                  "price": 0
+                },
+                {
+                  "id": "42",
+                  "value": "room_temp",
+                  "name": "بدرجة حرارة الغرفة",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "الوجبات السريعة",
+      "items": [
+        {
+          "id": 301,
+          "name": "برجر دجاج",
+          "price": "9.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/51172733/prdimage/prd-img-1738887140909.png",
+          "options": [
+            {
+              "id": "15",
+              "key": "cheese",
+              "name": "الجبنة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "43",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "16",
+              "key": "sauce",
+              "name": "الصوص",
+              "allow_multiple": true,
+              "required": false,
+              "values": [
+                {
+                  "id": "44",
+                  "value": "ketchup",
+                  "name": "كاتشب",
+                  "price": 0
+                },
+                {
+                  "id": "45",
+                  "value": "garlic_sauce",
+                  "name": "صوص الثوم",
+                  "price": 0
+                },
+                {
+                  "id": "46",
+                  "value": "mayonnaise",
+                  "name": "مايونيز",
+                  "price": 0
+                },
+                {
+                  "id": "47",
+                  "value": "bbq_sauce",
+                  "name": "صوص باربكيو",
+                  "price": 0
+                },
+                {
+                  "id": "48",
+                  "value": "special_sauce",
+                  "name": "صوص خاص",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 302,
+          "name": "برجر زنجر",
+          "price": "11.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/75308430/prdimage/prd-img-1738893900354.png",
+          "options": [
+            {
+              "id": "17",
+              "key": "cheese",
+              "name": "الجبنة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "49",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "18",
+              "key": "sauce",
+              "name": "الصوص",
+              "allow_multiple": true,
+              "required": false,
+              "values": [
+                {
+                  "id": "50",
+                  "value": "ketchup",
+                  "name": "كاتشب",
+                  "price": 0
+                },
+                {
+                  "id": "51",
+                  "value": "garlic_sauce",
+                  "name": "صوص الثوم",
+                  "price": 0
+                },
+                {
+                  "id": "52",
+                  "value": "mayonnaise",
+                  "name": "مايونيز",
+                  "price": 0
+                },
+                {
+                  "id": "53",
+                  "value": "bbq_sauce",
+                  "name": "صوص باربكيو",
+                  "price": 0
+                },
+                {
+                  "id": "54",
+                  "value": "special_sauce",
+                  "name": "صوص خاص",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 303,
+          "name": "برجر لحم",
+          "price": "10.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/219147099/prdimage/prd-img-1738896079418.png",
+          "options": [
+            {
+              "id": "19",
+              "key": "cheese",
+              "name": "الجبنة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "55",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "20",
+              "key": "sauce",
+              "name": "الصوص",
+              "allow_multiple": true,
+              "required": false,
+              "values": [
+                {
+                  "id": "56",
+                  "value": "ketchup",
+                  "name": "كاتشب",
+                  "price": 0
+                },
+                {
+                  "id": "57",
+                  "value": "garlic_sauce",
+                  "name": "صوص الثوم",
+                  "price": 0
+                },
+                {
+                  "id": "58",
+                  "value": "mayonnaise",
+                  "name": "مايونيز",
+                  "price": 0
+                },
+                {
+                  "id": "59",
+                  "value": "bbq_sauce",
+                  "name": "صوص باربكيو",
+                  "price": 0
+                },
+                {
+                  "id": "60",
+                  "value": "special_sauce",
+                  "name": "صوص خاص",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 304,
+          "name": "بطاطس",
+          "price": "5.00",
+          "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/173064598/prdimage/66_Copycat-McDonalds-French-Fries-.jpg",
+          "options": [
+            {
+              "id": "21",
+              "key": "sauce",
+              "name": "الصوص",
+              "allow_multiple": true,
+              "required": false,
+              "values": [
+                {
+                  "id": "61",
+                  "value": "ketchup",
+                  "name": "كاتشب",
+                  "price": 0
+                },
+                {
+                  "id": "62",
+                  "value": "garlic_sauce",
+                  "name": "صوص الثوم",
+                  "price": 0
+                },
+                {
+                  "id": "63",
+                  "value": "mayonnaise",
+                  "name": "مايونيز",
+                  "price": 0
+                },
+                {
+                  "id": "64",
+                  "value": "bbq_sauce",
+                  "name": "صوص باربكيو",
+                  "price": 0
+                },
+                {
+                  "id": "65",
+                  "value": "special_sauce",
+                  "name": "صوص خاص",
+                  "price": 0
+                }
+              ]
+            },
+            {
+              "id": "22",
+              "key": "cheese_topping",
+              "name": "إضافة جبنة",
+              "allow_multiple": false,
+              "required": false,
+              "values": [
+                {
+                  "id": "66",
+                  "value": "yes",
+                  "name": "نعم",
+                  "price": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
