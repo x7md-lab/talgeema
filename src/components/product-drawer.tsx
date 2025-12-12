@@ -6,12 +6,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
+import type { Product as ApiProduct } from "@/types/menu";
 
 interface Product {
   id: number;
   name: string;
   price: number;
   image: string;
+  originalProduct?: ApiProduct;
 }
 
 interface ProductDrawerProps {
@@ -26,6 +28,8 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
 
   const handleAddToOrder = () => {
     if (product) {
+      // In a real app, we would gather selected options here and pass them to addItem
+      // For now, we just add the base product
       addItem(product, quantity);
       setQuantity(1); // Reset quantity
       onOpenChange(false); // Close drawer
@@ -79,89 +83,45 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
 
           <div className="h-2 w-full bg-gray-100 dark:bg-surface-dark"></div>
 
-          {/* Options: Size */}
-          <div className="px-5 py-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-900 dark:text-white text-lg font-bold">اختر الحجم</h3>
-              <span className="bg-primary/10 text-primary px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide">
-                مطلوب
-              </span>
+          {/* Dynamic Options */}
+          {product.originalProduct?.options.map((option) => (
+            <div key={option.id} className="px-5 py-6 border-b border-gray-100 dark:border-white/5 last:border-0">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-900 dark:text-white text-lg font-bold">{option.name}</h3>
+                <span className={`px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide ${
+                  option.required 
+                    ? "bg-primary/10 text-primary" 
+                    : "text-gray-400"
+                }`}>
+                  {option.required ? "مطلوب" : "اختياري"}
+                </span>
+              </div>
+              <div className="flex flex-col gap-3">
+                {option.values.map((val) => (
+                  <label key={val.id} className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
+                    <input
+                      className={`peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 ${option.allow_multiple ? 'rounded-md' : 'rounded-full'} bg-transparent checked:border-primary checked:bg-primary focus:outline-none focus:ring-0 transition-all`}
+                      name={option.key} // Using key for grouping radios
+                      type={option.allow_multiple ? "checkbox" : "radio"}
+                      value={val.value}
+                    />
+                    <div className="flex grow justify-between items-center">
+                      <span className="text-gray-900 dark:text-white font-semibold text-sm peer-checked:text-primary">
+                        {val.name}
+                      </span>
+                      {val.price > 0 && (
+                        <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                          +{val.price} ريال
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <label className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
-                <input
-                  defaultChecked
-                  className="peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 rounded-full bg-transparent checked:border-primary checked:bg-primary focus:outline-none focus:ring-0 transition-all"
-                  name="size-option"
-                  type="radio"
-                />
-                <div className="flex grow justify-between items-center">
-                  <span className="text-gray-900 dark:text-white font-semibold text-sm peer-checked:text-primary">
-                    عادي
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                    +0.00 ريال
-                  </span>
-                </div>
-              </label>
-              <label className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
-                <input
-                  className="peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 rounded-full bg-transparent checked:border-primary checked:bg-primary focus:outline-none focus:ring-0 transition-all"
-                  name="size-option"
-                  type="radio"
-                />
-                <div className="flex grow justify-between items-center">
-                  <span className="text-gray-900 dark:text-white font-semibold text-sm peer-checked:text-primary">
-                    كبير
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                    +3.50 ريال
-                  </span>
-                </div>
-              </label>
-            </div>
-          </div>
+          ))}
 
-          <div className="px-5 pb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-900 dark:text-white text-lg font-bold">إضافات</h3>
-              <span className="text-gray-400 text-xs font-bold uppercase tracking-wide">
-                اختياري
-              </span>
-            </div>
-            <div className="flex flex-col gap-3">
-              <label className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
-                <input
-                  className="peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 rounded-md bg-transparent checked:bg-primary checked:border-primary focus:outline-none focus:ring-0 transition-all"
-                  type="checkbox"
-                />
-                <div className="flex grow justify-between items-center">
-                  <span className="text-gray-900 dark:text-white font-semibold text-sm">
-                    سكر زيادة
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                    +1.00 ريال
-                  </span>
-                </div>
-              </label>
-              <label className="group relative flex items-center gap-4 rounded-xl border border-gray-200 dark:border-white/10 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-surface-dark/50 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10">
-                <input
-                  className="peer h-5 w-5 appearance-none border-2 border-gray-300 dark:border-gray-500 rounded-md bg-transparent checked:bg-primary checked:border-primary focus:outline-none focus:ring-0 transition-all"
-                  type="checkbox"
-                />
-                <div className="flex grow justify-between items-center">
-                  <span className="text-gray-900 dark:text-white font-semibold text-sm">
-                    نعناع
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                    +0.50 ريال
-                  </span>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <div className="px-5 pb-8">
+          <div className="px-5 pb-8 pt-6">
             <h3 className="text-gray-900 dark:text-white text-lg font-bold mb-3">
               ملاحظات خاصة
             </h3>
@@ -197,11 +157,9 @@ export default function ProductDrawer({ product, open, onOpenChange }: ProductDr
             </div>
             <Button 
               onClick={handleAddToOrder}
-              className="flex-1 h-[56px] bg-primary hover:bg-primary/90 text-white font-bold text-base rounded-full px-6 flex justify-between items-center shadow-glow active:scale-[0.98] transition-all duration-200 cursor-pointer">
-              <span>إضافة للطلب</span>
-              <span className="bg-white/20 px-2 py-0.5 rounded-lg text-sm backdrop-blur-sm">
-                {(product.price * quantity).toFixed(2)} ريال
-              </span>
+              className="flex-1 h-[56px] rounded-full text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
+            >
+              إضافة {(product.price * quantity).toFixed(2)} ريال
             </Button>
           </div>
         </div>
