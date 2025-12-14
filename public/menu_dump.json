@@ -11,61 +11,70 @@
           "imageSrc": "https://cdn.neartail.com/1FAIpQLSdihV9g4xKCh4gkudeCftPyvzJyGgj5xaL7BQr_wE0rJPOKGQ/246624855/prdimage/prd-img-1738814515898.png",
           "options": [
             {
-              "id": "1",
+              "id": "28",
+              "key": "size",
+              "name": "المقاس",
+              "allow_multiple": false,
+              "required": true,
+              "values": [
+                {
+                  "id": "72",
+                  "value": "mid",
+                  "name": "وسط",
+                  "price": 0
+                },
+                {
+                  "id": "73",
+                  "value": "large",
+                  "name": "كبير",
+                  "price": 2
+                }
+              ]
+            },
+            {
+              "id": "29",
               "key": "sugar",
               "name": "السكر",
               "allow_multiple": false,
               "required": false,
               "values": [
                 {
-                  "id": "1",
-                  "value": "none",
+                  "id": "74",
+                  "value": "without",
                   "name": "بدون",
                   "price": 0
                 },
                 {
-                  "id": "2",
+                  "id": "75",
                   "value": "light",
                   "name": "خفيف",
                   "price": 0
                 },
                 {
-                  "id": "3",
-                  "value": "medium",
-                  "name": "وسط",
-                  "price": 0
-                },
-                {
-                  "id": "4",
-                  "value": "heavy",
-                  "name": "زيادة",
+                  "id": "76",
+                  "value": "well",
+                  "name": "مضبوط",
                   "price": 0
                 }
               ]
             },
             {
-              "id": "2",
-              "key": "additives",
-              "name": "الإضافات",
+              "id": "30",
+              "key": "add",
+              "name": "حط عليه",
               "allow_multiple": true,
               "required": false,
               "values": [
                 {
-                  "id": "5",
+                  "id": "77",
                   "value": "mint",
                   "name": "نعناع",
                   "price": 0
                 },
                 {
-                  "id": "6",
+                  "id": "78",
                   "value": "habaq",
                   "name": "حبق",
-                  "price": 0
-                },
-                {
-                  "id": "7",
-                  "value": "bardakosh_doosh",
-                  "name": "بردقوش (دوش)",
                   "price": 0
                 }
               ]
@@ -110,6 +119,14 @@
                   "price": 0
                 }
               ]
+            },
+            {
+              "id": "24",
+              "key": "g",
+              "name": "ب",
+              "allow_multiple": false,
+              "required": false,
+              "values": []
             }
           ]
         },
