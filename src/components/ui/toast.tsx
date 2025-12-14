@@ -40,7 +40,7 @@ function ToastList() {
 	return (
 		<Toast.Portal data-slot="toast-portal">
 			<Toast.Viewport
-				className="fixed top-auto right-4 bottom-4 mx-auto flex w-[calc(100%_-_2rem)] sm:right-8 sm:bottom-8 sm:w-[356px]"
+				className="fixed top-auto right-4 bottom-4 mx-auto flex w-[calc(100%_-_2rem)] sm:right-8 sm:bottom-8 sm:w-[356px] z-[9999]"
 				data-slot="toast-viewport"
 			>
 				{toasts.map((toast) => (
