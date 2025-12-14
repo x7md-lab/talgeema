@@ -30,8 +30,7 @@ export const useUIStore = create<UIStore>((set) => ({
     editingCartItem: editItem
   }),
   closeProductDrawer: () => set({ 
-    isProductDrawerOpen: false, 
-    selectedProduct: null,
-    editingCartItem: null
+    isProductDrawerOpen: false 
+    // We keep the data so the drawer can animate out
   }),
 }));
