@@ -11,6 +11,7 @@ import { useUIStore } from "@/store/useUIStore";
 import type { Product as ApiProduct } from "@/types/menu";
 import { useForm, useWatch, Controller } from "react-hook-form";
 import { X } from "lucide-react";
+import { toastManager } from "@/hooks/use-toast";
 
 interface Product {
   id: number;
@@ -151,6 +152,14 @@ function ProductForm({ product, editItem, onClose }: { product: Product; editIte
       });
       onClose();
     }
+  };
+
+  const onInvalid = () => {
+    toastManager.add({
+      title: "خيارات مطلوبة",
+      description: "يرجى اختيار جميع الخيارات المطلوبة للمتابعة",
+      type: "error"
+    });
   };
 
   return (
@@ -318,7 +327,7 @@ function ProductForm({ product, editItem, onClose }: { product: Product; editIte
             </button>
           </div>
           <Button 
-            onClick={handleSubmit(onSubmit)}
+            onClick={handleSubmit(onSubmit, onInvalid)}
             className="flex-1 h-[56px] rounded-full text-lg font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-all"
           >
             {editItem ? "تحديث" : "إضافة"} {calculateTotalPrice().toFixed(2)} ريال
