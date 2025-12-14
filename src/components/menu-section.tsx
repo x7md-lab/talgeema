@@ -21,9 +21,9 @@ export default function MenuSection() {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl" id="menu-section">
+    <div className="container mx-auto px-4 py-8 max-w-4xl scroll-mt-44" id="menu-section">
       {categories.map((category) => (
-        <section key={category.id} className="mb-12 scroll-mt-32" id={`category-${category.id}`}>
+        <section key={category.id} className="mb-12 scroll-mt-44" id={`category-${category.id}`}>
           <div className="flex items-center mb-6">
             <div className="h-1 bg-primary/20 flex-1 rounded-full"></div>
             <h2 className="text-2xl font-bold mx-4 text-primary">{category.name}</h2>
